@@ -1,60 +1,96 @@
+% !TEX root =../dissertation.tex
 \documentclass[./dissertation.tex]{subfiles}
 \begin{document}
 
-    \chapter{Some Examples You May Need}
-    This is where your content will go. There will be examples of figures, tables, citations, and footnotes/sidenotes in this section. In the source files, there will be examples and how to get them to appear on the TOC, LOF, and LOTs Some Diciplines use section and subsection headings more than others. The Chapter one is really all that matters. This is strictly to give the reader a sence of how they look on the TOC.
-    \section{Your first section}
-      How do you feel so far? In these next few subsections we are going to be illustrating how to do these different things in LaTeX. Hopefully you will be able to replicate it whenever you need them.
-      It is good to have all of you images (figures) in their own folder so you can keep some organization to your projects.
-
-      \subsection{Table Example}
-        In this subsection, we are going to give an example of a table and how one will look. There are many ways to make a table and customize them. Here is one example:
-
-
-      \begin{table}[ht]
-        \centering
-
-      \begin{tabular}[c]{|l|c|rc|}
-        \hline
-        left justified  & centerd  & right justified  & no left border\\
-        \hline
-        row 1 & fill & in between & the \&s\\
-        row 2 & & &\\
-        \hline
-      \end{tabular}
-      \caption{The Caption of the table.}
-      \label{table:someTable}
-      \end{table}
 
 
 
-      \subsection{Figure Example}
-      This is going to be an example of how to insert an image and it's caption. We can also reference it anywhere else in the document as well.
-      \begin{figure}[h]
-        \centering\includegraphics[width=0.5\textwidth]{figures/digilab_logo}
-        \caption{The Digital Humanities Lab Logo}
-        \label{fig:digilogo}
-      \end{figure}
-      The Digital Humanities logo, figure ~\ref{fig:digilogo} is one of many different prototypes.
+  \chapter{Introduction}
 
-      \subsection{Equation Examples}
-        You can also reference an equation just like a figure and table. There are two different enviornments that are needed. The first is just using the equation enviornment. This is useful when you have one equation to write. As seen here:
-          \begin{equation*}
-            Y=\beta_{0} + \sum\limits_{i=1}^n \beta_{i}X_{i} + e
-          \end{equation*}
-        The equation for the general multiple linear regression model is above. This is a good use case for the equation enviornment. \LaTeX  knows to expect math symbols inside the enviornment. What if you need more than one line? What if each line need to align? Thats when the align enviornment comes in handy. A lot of the times, you will need to show the simplification of equations or steps in calcualtions.
-          \begin{center}
-            \begin{align*}
-              P_{s} &= \frac{D*F}{N*P*I}\\
-                            \\
-              &= \frac{D*R*W}{N*P*I} \text{  since } F=R*W\\
-                      \\
-              0.70 &= \frac{1*R*0.1}{2.5*1*4,294,967,295}\\
-                      \\
-             R &= 751619276625.0 \\
-             \\
-             A=\frac{R*0.1}{4096} &\implies A = 1835007.99
-           \end{align*}
-         \end{center}
 
-\end{document}
+
+  Image segmentation started with traditional methods and algorithms such as thresholding, watershed, and optical flow, which rely on pixel intensity. Traditional rule-based methods like Thresholding and Watershed analyze pixel values to identify borders and boundaries within areas of interest. Machine learning-based methods - such as Support Vector Machines (SVM), random forests, and contrastive learning - involve the use of statistical machine learning models and increased the popularity and applicability of segmentation. Finally, deep learning-based methods leverage neural networks to learn hierarchical feature representation from raw images without requiring manual feature engineering. This process saw significant improvement with the introduction of Convolutional Neural Networks (CNN). CNNs are trained to detect features in regions of interest, enabling them to perform similarly on new images. Segmentation techniques can be divided into three categories: supervised, semi-supervised, and unsupervised.
+
+  U-Net and its variants are extensively adopted in biomedical image segmentation for their capability to automatically extract features from images without manual intervention or preprocessing. They can learn high-level semantic information and low-level spatial information from large-scale data. U-Net architectures are categorized based on their design and functionality. Basic U-Nets, like the original U-Net and 3D U-Net, are foundational, with the latter extending to 3D data for volumetric segmentation useful in CT and MRI scans. Advanced U-Nets include Attention U-Net, which uses attention mechanisms for precision; Inception U-Net, capturing multi-scale information through varied kernel sizes; Residual U-Net, which incorporates residual connections to aid deep network training; and Dense U-Net, promoting feature reuse via dense connections. Currently, CNNs represent the state-of-the-art in image segmentation, with U-Net being the predominant architecture, especially in the field of biomedical image segmentation. These advancements have greatly improved the accuracy and efficiency of biomedical image analysis, making it an essential tool in various fields of research.
+  
+  Biomedical images come in a vast variety of formats, types, and modalities. The modalities in medical imaging include computed tomography (CT), magnetic resonance imaging (MRI), positron emission tomography (PET), and ultrasound, while microscopy modalities include fluorescent microscopy, bright-field, lens-free microscopy, light microscopy, volume electron microscopy, and phase contrast microscopy, just to name a few. Similarly, due to the variety of biological structures, segmentation targets can vary from nuclei and cell membranes to organelles such as mitochondria, cilia, tumors, and lesions, as well as blood vessels, bone, and brain structures. This diversity in imaging techniques and segmentation targets highlights the need for specialized and customizable deep learning models in biomedical applications.
+  
+  The Segment Anything Model (SAM) can segment an object within an image using user inputs, including a single point, multiple points, an entire mask, a bounding box, or textual descriptions. This functionality is based on the model’s inherent ability to recognize objects, which enables it to segment unfamiliar object types without further training, effectively supporting zero-shot learning. Furthermore, the effectiveness of SAM is enhanced by its specialized architecture and the use of a significantly large dataset.
+  \section{Challenges}
+  Despite their success, CNN methods face challenges including poor generalizability, limited transferability, and the complexity of model development as well as fine-tuning pre-trained models in biomedical applications. This is due to the fact that manual labeling of data in biomedicine requires expert knowledge and is a costly and time-consuming task, making large and quality annotated datasets scarce. As a result, there exists a vast variety of deep learning models, each tailored to a specific modality and target structure. Unsupervised methods, on the other hand, do not require pre-training or an existing dataset and rely on domain-specific rules and heuristics. Although these methods exhibit less accuracy than CNN methods, they excel in reproducibility and generalizability as they do not depend on prior data knowledge. These different approaches to image segmentation provide a range of options for researchers to choose from, depending on their specific needs and resources.
+
+  In the biomedical field, where labeled data is often scarce and costly to obtain, several solutions have been proposed to augment and utilize available data effectively. These include semi-supervised learning, which utilizes both labeled and unlabeled data to enhance learning accuracy by leveraging the data’s underlying distribution. Active learning focuses on selectively querying the most informative data points for expert labeling, optimizing the training process by using the most valuable examples. Data augmentation techniques, such as image transformations and synthetic data generation through Generative Adversarial Networks, increase the diversity and volume of training data, enhancing model robustness and reducing overfitting. Transfer learning transfers knowledge from one task to another, minimizing the need for extensive labeled data in new tasks. Self-supervised learning creates its labels by defining a pretext task, like predicting the position of a randomly cropped image patch, aiding in the learning of useful data representations. Additionally, few-shot, one-shot, and zero-shot learning techniques are designed to operate with minimal or no labeled examples, relying on generalization capabilities or metadata for making predictions about unseen classes.
+  
+  Generalizability refers to the trained model’s ability to perform well on unseen data outside of the training set. It is a crucial aspect of machine learning, particularly in biomedical applications, where variations in image acquisition conditions, tissue types, and other factors can be substantial. Data augmentation techniques and transfer learning are two excellent methods to overcome overfitting and improve generalizability where the training data is small. While transfer learning is a powerful technique for leveraging pre-trained models to boost performance, especially in scenarios with limited data, it does come with its own set of challenges and limitations such as domain mismatch, risk of overfitting, computational demands, and potential biases from the source dataset.
+  
+  Reproducibility refers to obtaining consistent results using the same input data, computational steps, methods, and conditions of analysis. This concept is key in scientific research to ensure that outcomes can be reliably replicated under the same conditions, fostering trust and confidence in the findings. Reproducibility is influenced by various factors including dataset variability, model architecture specifics, optimization procedures, and computational infrastructure. Apart from the loss of validity of a scientific method, non-reproducibility can lead to wasted resources, stalled scientific progress, erroneous conclusions, and significant ethical concerns. To ensure reproducibility in deep learning for medical image segmentation, Renard et al. advocate for comprehensive documentation, standardized practices, fixed random seeds, cross-validation, multiple evaluation metrics, and sharing of source code and dependencies.
+  
+  Deep learning models are effective across various applications but their usability depends on several factors such as the complexity of the task at hand, data availability, and the extent of necessary model customization. For users who prefer straightforward applications, ease of use is crucial. They benefit from methods that do not require extensive modifications or tuning to achieve optimal results. Incorporating an intuitive graphical user interface (GUI) and ensuring interactivity can enhance the usability of these tools, making them more accessible to non-expert users, such as biologists, who need practical, ready-to-use solutions without the intricacies of model adjustments.
+  
+    
+
+
+
+
+
+
+
+
+
+  % #############################################################################################
+%   This is where your content will go. There will be examples of figures, tables, citations, and footnotes/sidenotes in this section. In the source files, there will be examples and how to get them to appear on the TOC, LOF, and LOTs Some Diciplines use section and subsection headings more than others. The Chapter one is really all that matters. This is strictly to give the reader a sence of how they look on the TOC.
+%   \section{Your first section}
+%     How do you feel so far? In these next few subsections we are going to be illustrating how to do these different things in LaTeX. Hopefully you will be able to replicate it whenever you need them.
+%     It is good to have all of you images (figures) in their own folder so you can keep some organization to your projects.
+
+%     \subsection{Table Example}
+%       In this subsection, we are going to give an example of a table and how one will look. There are many ways to make a table and customize them. Here is one example:
+
+
+%     \begin{table}[ht]
+%       \centering
+
+%     \begin{tabular}[c]{|l|c|rc|}
+%       \hline
+%       left justified  & centerd  & right justified  & no left border\\
+%       \hline
+%       row 1 & fill & in between & the \&s\\
+%       row 2 & & &\\
+%       \hline
+%     \end{tabular}
+%     \caption{The Caption of the table.}
+%     \label{table:someTable}
+%     \end{table}
+
+
+
+%     \subsection{Figure Example}
+%     This is going to be an example of how to insert an image and it's caption. We can also reference it anywhere else in the document as well.
+%     \begin{figure}[h]
+%       \centering\includegraphics[width=0.5\textwidth]{figures/digilab_logo}
+%       \caption{The Digital Humanities Lab Logo}
+%       \label{fig:digilogo}
+%     \end{figure}
+%     The Digital Humanities logo, figure ~\ref{fig:digilogo} is one of many different prototypes.
+
+%     \subsection{Equation Examples}
+%       You can also reference an equation just like a figure and table. There are two different enviornments that are needed. The first is just using the equation enviornment. This is useful when you have one equation to write. As seen here:
+%         \begin{equation*}
+%           Y=\beta_{0} + \sum\limits_{i=1}^n \beta_{i}X_{i} + e
+%         \end{equation*}
+%       The equation for the general multiple linear regression model is above. This is a good use case for the equation enviornment. \LaTeX  knows to expect math symbols inside the enviornment. What if you need more than one line? What if each line need to align? Thats when the align enviornment comes in handy. A lot of the times, you will need to show the simplification of equations or steps in calcualtions.
+%         \begin{center}
+%           \begin{align*}
+%             P_{s} &= \frac{D*F}{N*P*I}\\
+%                           \\
+%             &= \frac{D*R*W}{N*P*I} \text{  since } F=R*W\\
+%                     \\
+%             0.70 &= \frac{1*R*0.1}{2.5*1*4,294,967,295}\\
+%                     \\
+%             R &= 751619276625.0 \\
+%             \\
+%             A=\frac{R*0.1}{4096} &\implies A = 1835007.99
+%           \end{align*}
+%         \end{center}
+
+% \end{document}
