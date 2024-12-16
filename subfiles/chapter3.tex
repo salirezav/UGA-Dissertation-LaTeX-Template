@@ -41,11 +41,19 @@ Taking advantage of this temporal regularity in ciliary motion, we use OF to cap
 
 \eqref{eq:eq1} Where $I_{x,y,t}$ is the pixel intensity at position $x, y$ a time $t$. Here, $u_t,v_t$ are small changes in the next frame taken after $t$ time, and $u, v$, respectively, are the OF components that represent the displacement in pixel positions between consecutive frames in the horizontal and vertical directions at pixel location $x, y$.
 
-$:::{figure} sample_vids_with_gt_mask.png :label: fig:sample_vids_with_gt_mask$ A sample of three videos in our cilia dataset with their manually annotated ground truth masks. $:::  :::{figure} sample_OF.png :label: fig:sample_OF$ Representation of rotation (curl) component of OF at a random time
 
 \section{Autoregressive Modeling}
 
-$@fig:sample_OF$ shows a sample of the OF component at a random time. From OF vectors, elemental components such as rotation are derived, which highlights the ciliary motion by capturing twisting and turning movements. To model the temporal evolution of these motion vectors, we employ an autoregressive (AR) model $[@doi:10.5244/C.21.76]$. This model captures the dynamics of the flow vectors over time, allowing us to understand how the motion evolves frame by frame. The AR model helps in decomposing the motion into a low-dimensional subspace, which simplifies the complex ciliary motion into more manageable analyses.
+\begin{figure}[h]
+	\centering\includegraphics[width=.8\textwidth]{figures/cilia/sample_vids_with_gt_mask.png}
+	\caption{A sample of three videos in our cilia dataset with their manually annotated ground truth masks.}
+	\label{fig:sampleVidWithMask}
+\end{figure}
+
+
+
+Figure ~\ref{fig:sampleVidWithMask} shows a sample of the OF component at a random time. From OF vectors, elemental components such as rotation are derived, which highlights the ciliary motion by capturing twisting and turning movements. To model the temporal evolution of these motion vectors, we employ an autoregressive (AR) model $[@doi:10.5244/C.21.76]$. This model captures the dynamics of the flow vectors over time, allowing us to understand how the motion evolves frame by frame. The AR model helps in decomposing the motion into a low-dimensional subspace, which simplifies the complex ciliary motion into more manageable analyses.
+
 
 \begin{equation}
 	y_t =C\vec{x_t} + \vec{u}
@@ -61,13 +69,41 @@ In equation \eqref{eq:eq2}, $y_t$ represents the appearance of cilia at time t i
 
 Equation \eqref{eq:eq3} is a decomposition of each frame of a ciliary motion video yt into a low-dimensional state vector $x_t$ using an orthogonal basis $C$. This equation at position $x_t$ is a function of the sum of $d$ of its previous positions $ x_{t-1}, x_{t-2}, x_{t-d} $ each multiplied by its corresponding coefficients $A = A_1, A_2,..., A_d $. The noise terms $u$ and $v$ are used to represent the residual difference between the observed data and the solutions to the linear equations. The variance in the data is predominantly captured by a few dimensions of $C$, simplifying the complex motion into manageable analyses.
 
+\begin{figure}[h]
+	\centering\includegraphics[width=0.5\textwidth]{figures/cilia/sample_OF.png}
+	\caption{Representation of rotation (curl) component of OF at a random time.}
+	\label{fig:sampleOF}
+\end{figure}
+
+
 Each order of the autoregressive model roughly aligns with different frequencies within the data, therefore, in our experiments, we chose d=5 as the order of our autoregressive model. This choice allows us to capture a broader temporal context, providing a more comprehensive understanding of the system’s dynamics. We then created raw masks from this lower-dimensional subspace, and further enhanced them with adaptive thresholding to remove the remaining noise.
 
-$:::{figure} AR matrices.png :label: fig:sample_AR$ The pixel representation of the 5-order AR model of the OF component of a sample video. The x and y axes correspond to the width and height of the video. $::: In @fig:sample_AR$, the first-order AR parameter is showing the most variance in the video, which corresponds to the frequency of motion that cilia exhibit. The remaining orders have correspondence with other different frequencies in the data caused by, for instance, camera shaking. Evidently, simply thresholding the first-order AR parameter is adequate to produce an accurate mask, however, in order to get a more refined result we subtracted the second order from the first one, followed by a Min-Max normalization of pixel intensities and scaling to an 8-bit unsigned integer range. We used adaptive thresholding to extract the mask on all videos of our dataset. The generated masks exhibited under-segmentation in the ciliary region, and sparse over-segmentation in other regions of the image. To overcome this, we adapted a Gaussian blur filter followed by an Otsu thresholding to restore the under-segmentation and remove the sparse over-segmentation. $@fig:thresholding$ illustrates the steps of the process.
 
-$:::{figure} thresholding.png :label: fig:thresholding$ The process of computing the masks. a) Subtracting the second-order AR parameter from the first-order, followed by b) Adaptive thresholding, which suffers from under/over-segmentation. c) A Gaussian blur filter, followed by d) An Otsu thresholding eliminates the under/over-segmentation. :::
+
+
+
+In ~\ref{fig:sampleOF} , the first-order AR parameter is showing the most variance in the video, which corresponds to the frequency of motion that cilia exhibit. The remaining orders have correspondence with other different frequencies in the data caused by, for instance, camera shaking. Evidently, simply thresholding the first-order AR parameter is adequate to produce an accurate mask, however, in order to get a more refined result we subtracted the second order from the first one, followed by a Min-Max normalization of pixel intensities and scaling to an 8-bit unsigned integer range. We used adaptive thresholding to extract the mask on all videos of our dataset. The generated masks exhibited under-segmentation in the ciliary region, and sparse over-segmentation in other regions of the image. To overcome this, we adapted a Gaussian blur filter followed by an Otsu thresholding to restore the under-segmentation and remove the sparse over-segmentation. Figure ~\ref{fig:thresholding} illustrates the steps of the process.
+
+\begin{figure}[h]
+	\centering\includegraphics[width=1\textwidth]{figures/cilia/AR matrices.png}
+	\caption{The pixel representation of the 5-order AR model of the OF component of a sample video. The x and y axes correspond to the width and height of the video.}
+	\label{fig:ARMatrices}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering\includegraphics[width=1\textwidth]{figures/cilia/thresholding.png}
+	\caption{The process of computing the masks. \textbf{a)} Subtracting the second-order AR parameter from the first-order, followed by \textbf{b)} Adaptive thresholding, which suffers from under/over-segmentation. \textbf{c)} A Gaussian blur filter, followed by \textbf{d)} An Otsu thresholding eliminates the under/over-segmentation.}
+	\label{fig:thresholding}
+\end{figure}
+
 \section{Training the model}
-Our dataset includes 512 videos, with 437 videos of dyskinetic cilia and 75 videos of healthy motile cilia, referred to as the control group. The control group is split into \%85 and \%15 for training and validation respectively. 108 videos in the dyskinetic group are manually annotated which are used in the testing step. $@fig:sample_vids_with_gt_mask$ shows annotated samples of our dataset.
+Our dataset includes 512 videos, with 437 videos of dyskinetic cilia and 75 videos of healthy motile cilia, referred to as the control group. The control group is split into \%85 and \%15 for training and validation respectively. 108 videos in the dyskinetic group are manually annotated which are used in the testing step. Figure ~\ref{fig:sampleVidWithMask} shows annotated samples of our dataset.
+\begin{figure}[h]
+	\centering\includegraphics[width=.6\textwidth]{figures/cilia/out_sample.png}
+	\caption{The model predictions on 5 dyskinetic cilia samples. The first column shows a frame of the video, the second column shows the manually labeled ground truth, the third column is the model’s prediction, and the last column is a thresholded version of the prediction.}
+	\label{fig:outSample}
+\end{figure}
 
 In our study, we employed a Feature Pyramid Network (FPN) $[@kirillov2017unified]$ architecture with a ResNet-34 encoder. The model was configured to handle grayscale images with a single input channel and produce binary segmentation masks. For the training input, one mask is generated per video using our methodology, and we use the first 250 frames from each video in the control group making a total of 18,750 input images. We utilized Binary Cross-Entropy Loss for training and the Adam optimizer with a learning rate of $10^{-3}$. To evaluate the model’s performance, we calculated the Dice score during training and validation. Data augmentation techniques, including resizing, random cropping, and rotation, were applied to enhance the model’s generalization capability. The implementation was done using a library $[@Iakubovskii:2019]$ based on PyTorch Lightning to facilitate efficient training and evaluation. Table \ref{tbl:model_specs} contains a summary of the model parameters and specifications.
 \begin{table}[ht]
@@ -92,14 +128,17 @@ In our study, we employed a Feature Pyramid Network (FPN) $[@kirillov2017unified
 		Implementation               & Using a Python library with Neural Networks for Image Segmentation based on PyTorch ${Iakubovskii:2019}$ \\ \hline
 	\end{tabular}
 \end{table}
-The next section discusses the results of the experiment and the performance of the model in detail.
+% The next section discusses the results of the experiment and the performance of the model in detail.
 
 
 
 \section{Results and Discussion}
 The model’s performance metrics, including IoU, Dice score, sensitivity, and specificity, are summarized in @tbl:metrics. The validation phase achieved an IoU of 0.312 and a Dice score of 0.476, which indicates a moderate overlap between the predicted and ground truth masks. The high sensitivity (0.999) observed during validation suggests that the model is proficient in identifying ciliary regions, albeit with a specificity of 0.813, indicating some degree of false positives. In the testing phase, the IoU and Dice scores decreased to 0.230 and 0.374, respectively, reflecting the challenges posed by the dyskinetic cilia data, which were not included in the training or validation sets. Despite this, the model maintained a reasonable sensitivity of 0.631 and specificity of 0.787.
-$:::{figure} out_sample.png :label: fig:out_sample$ The model predictions on 5 dyskinetic cilia samples. The first column shows a frame of the video, the second column shows the manually labeled ground truth, the third column is the model’s prediction, and the last column is a thresholded version of the prediction. :::
-$@fig:out_sample$ provides visual examples of the model’s predictions on dyskinetic cilia samples, alongside the manually labeled ground truth and thresholded predictions. The dyskinetic samples were not used in the training or validation phases. These predictions were generated after only 20 epochs of training with a small training data. The visual comparison reveals that, while the model captures the general structure of ciliary regions, there are instances of under-segmentation and over-segmentation, which are more pronounced in the dyskinetic samples. This observation is consistent with the quantitative metrics, suggesting that further refinement of the pseudolabel generation process or model architecture could enhance segmentation accuracy.
+
+
+
+
+Figure ~\ref{fig:outSample} provides visual examples of the model’s predictions on dyskinetic cilia samples, alongside the manually labeled ground truth and thresholded predictions. The dyskinetic samples were not used in the training or validation phases. These predictions were generated after only 20 epochs of training with a small training data. The visual comparison reveals that, while the model captures the general structure of ciliary regions, there are instances of under-segmentation and over-segmentation, which are more pronounced in the dyskinetic samples. This observation is consistent with the quantitative metrics, suggesting that further refinement of the pseudolabel generation process or model architecture could enhance segmentation accuracy.
 
 
 \begin{table}[ht]
@@ -120,7 +159,7 @@ These results show the potential of our approach to reduce the reliance on manua
 
 
 \section{Conclusions and Final Remarks}
-In this paper, we introduced a self-supervised framework for cilia segmentation that eliminates the need for expert-labeled ground truth segmentation masks. Our approach takes advantage of the inherent visual similarities between healthy and unhealthy cilia to generate pseudolabels from optical flow-based motion segmentation of motile cilia. These pseudolabels are then used as ground truth for training a semi-supervised neural network capable of identifying regions containing dyskinetic cilia. Our results indicate that the self-supervised framework is a promising step towards automated cilia analysis. The model’s ability to generalize from motile to dyskinetic cilia demonstrates its potential applicability in clinical settings. Although there are areas for improvement, such as enhancing segmentation accuracy and expanding the dataset, the framework sets the foundation for more efficient and reliable cilia analysis pipelines.
+In this study, we introduced a self-supervised framework for cilia segmentation that eliminates the need for expert-labeled ground truth segmentation masks. Our approach takes advantage of the inherent visual similarities between healthy and unhealthy cilia to generate pseudolabels from optical flow-based motion segmentation of motile cilia. These pseudolabels are then used as ground truth for training a semi-supervised neural network capable of identifying regions containing dyskinetic cilia. Our results indicate that the self-supervised framework is a promising step towards automated cilia analysis. The model’s ability to generalize from motile to dyskinetic cilia demonstrates its potential applicability in clinical settings. Although there are areas for improvement, such as enhancing segmentation accuracy and expanding the dataset, the framework sets the foundation for more efficient and reliable cilia analysis pipelines.
 
 
 
