@@ -1,31 +1,42 @@
 % !TEX root =../dissertation.tex
 \documentclass[./dissertation.tex]{subfiles}
 \begin{document}
+\chapter{A Novel Pipeline for Cell Instance Segmentation, Tracking and Motility Classification of Toxoplasma Gondii in 3D Space}
 
-
-
+Toxoplasma gondii is the parasitic protozoan that causes disseminated toxoplasmosis, a disease that is estimated to infect around one-third of the world's population. While the disease is commonly asymptomatic, the success of the parasite is in large part due to its ability to easily spread through nucleated cells. The virulence of T. gondii is predicated on the parasite's motility. Thus the inspection of motility patterns during its lytic cycle has become a topic of keen interest. Current cell tracking projects usually focus on cell images captured in 2D which are not a true representation of the actual motion of a cell. Current 3D tracking projects lack a comprehensive pipeline covering all phases of preprocessing, cell detection, cell instance segmentation, tracking, and motion classification, and merely implement a subset of the phases. Moreover, current 3D segmentation and tracking pipelines are not targeted for users with less experience in deep learning packages. Our pipeline, TSeg, on the other hand, is developed for segmenting, tracking, and classifying the motility phenotypes of T. gondii in 3D microscopic images. Although TSeg is built initially focusing on T. gondii, it provides generic functions to allow users with similar but distinct applications to use it off-the-shelf. Interacting with all of TSeg's modules is possible through our Napari plugin which is developed mainly off the familiar SciPy scientific stack. Additionally, our plugin is designed with a user-friendly GUI in Napari which adds several benefits to each step of the pipeline such as visualization and representation in 3D. TSeg proves to fulfill a better generalization, making it capable of delivering accurate results with images of other cell types.
 
 \chapter{Introduction}
+Quantitative cell research often requires the measurement of different cell properties including size, shape, and motility. This step is facilitated using segmentation of imaged cells. With fluorescent markers, computational tools can be used to complete segmentation and identify cell features and positions over time. 2D measurements of cells can be useful, but the more difficult task of deriving 3D information from cell images is vital for metrics such as motility and volumetric qualities.
+
+Toxoplasmosis is an infection caused by the intracellular parasite Toxoplasma gondii. T. gondii is one of the most successful parasites, infecting at least one-third of the world's population. Although Toxoplasmosis is generally benign in healthy individuals, the infection has fatal implications in fetuses and immunocompromised individuals :cite:`saadatnia2012review` . T. gondii's virulence is directly linked to its lytic cycle which is comprised of invasion, replication, egress, and motility. Studying the motility of T. gondii is crucial in understanding its lytic cycle in order to develop potential treatments.
+
+For this reason, we present a novel pipeline to detect, segment, track, and classify the motility pattern of T. gondii in 3D space. One of the main goals is to make our pipeline intuitively easy to use so that the users who are not experienced in the fields of machine learning (ML), deep learning (DL), or computer vision (CV) can still benefit from it. The other objective is to equip it with the most robust and accurate set of segmentation and detection tools so that the end product has a broad generalization, allowing it to perform well and accurately for various cell types right off the shelf.
+
+PlantSeg uses a variant of 3D U-Net, called Residual 3D U-Net, for preprocessing and segmentation of multiple cell types :cite:`plantseg`. PlantSeg performs best among Deep Learning algorithms for 3D Instance Segmentation and is very robust against image noise :cite:`Kar2021.06.09.447748`. The segmentation module also includes the optional use of CellPose :cite:`stringer2021cellpose`. CellPose is a generalized segmentation algorithm trained on a wide range of cell types and is the first step toward increased optionality in TSeg. The Cell Tracking module consolidates the cell particles across the z-axis to materialize cells in 3D space and estimates centroids for each cell. The tracking module is also responsible for extracting the trajectories of cells based on the movements of centroids throughout consecutive video frames, which is eventually the input of the motion classifier module.
+
+Most of the state-of-the-art pipelines are restricted to 2D space which is not a true representative of the actual motion of the organism. Many of them require knowledge and expertise in programming, or in machine learning and deep learning models and frameworks, thus limiting the demographic of users that can use them. All of them solely include a subset of the aforementioned modules (i.e. detection, segmentation, tracking, and classification) :cite:`stringer2021cellpose`. Many pipelines rely on the user to train their own model, hand-tailored for their specific application. This demands high levels of experience and skill in ML/DL and consequently undermines the possibility and feasibility of quickly utilizing an off-the-shelf pipeline and still getting good results.
+
+To address these we present TSeg. It segments T. gondii cells in 3D microscopic images, tracks their trajectories, and classifies the motion patterns observed throughout the 3D frames. TSeg is comprised of four modules: pre-processing, segmentation, tracking, and classification. We developed TSeg as a plugin for Napari $:cite:`sofroniew_nicholas_2022_6598542`$ - an open-source fast and interactive image viewer for Python designed for browsing, annotating, and analyzing large multi-dimensional images. Having TSeg implemented as a part of Napari not only provides a user-friendly design but also gives more advanced users the possibility to attach and execute their custom code and even interact with the steps of the pipeline if needed. The preprocessing module is equipped with basic and extra filters and functionalities to aid in the preparation of the input data. TSeg gives its users the advantage of utilizing the functionalities that PlantSeg and CellPose provide. These functionalities can be chosen in the pre-processing, detection, and segmentation steps. This brings forth a huge variety of algorithms and pre-built models to select from, making TSeg not only a great fit for T. gindii, but also a variety of different cell types.
+
+
+\section{Background}
+
+The recent solutions in generalized and automated segmentation tools are focused on 2D cell images. Segmentation of cellular structures in 2D is important but not representative of realistic environments. Microbiological organisms are free to move on the z-axis and tracking without taking this factor into account cannot guarantee a full representation of the actual motility patterns. As an example, Fazli et al. :cite:`fazli2018unsupervised` identified three distinct motility types for T. gondii with two-dimensional data, however, they also acknowledge and state that based established heuristics from previous works there are more than three motility phenotypes for T. gondii. The focus on 2D research is understandable due to several factors. 3D data is difficult to capture as tools for capturing 3D slices and the computational requirements for analyzing this data are not available in most research labs. Most segmentation tools are unable to track objects in 3D space as the assignment of related centroids is more difficult. The additional noise from capture and focus increases the probability of incorrect assignment. 3D data also has issues with overlapping features and increased computation required per frame of time.
+
+Fazli et al. :cite:`fazli2018unsupervised` studies the motility patterns of T. gondii and provides a computational pipeline for identifying motility phenotypes of T. gondii in an unsupervised, data-driven way. In that work Ca2+ is added to T. gondii cells inside a Fetal Bovine Serum. T. gondii cells react to Ca2+ and become motile and fluorescent. The images of motile T. gondii cells were captured using an LSM 710 confocal microscope. They use Python 3 and associated scientific computing libraries (NumPy, SciPy, scikit-learn, matplotlib) in their pipeline to track and cluster the trajectories of T. gondii. Based on this work Fazli et al. :cite:`fazli2018toward` work on another pipeline consisting of preprocessing, sparsification, cell detection, and cell tracking modules to track T. gondii in 3D video microscopy where each frame of the video consists of image slices taken 1 micro-meters of focal depth apart along the z-axis direction. In their latest work Fazli et al. :cite:`fazli2019lightweight` developed a lightweight and scalable pipeline using task distribution and parallelism. Their pipeline consists of multiple modules: reprocessing, sparsification, cell detection, cell tracking, trajectories extraction, parametrization of the trajectories, and clustering. They could classify three distinct motion patterns in T. gondii using the same data from their previous work.
+
+% While combining open source tools is not a novel architecture, little has been done to integrate 3D cell tracking tools. Fazeli et al. :cite:`fazeli2020automated` motivated by the same interest in providing better tools to non-software professionals created a 2D cell tracking pipeline. This pipeline combines Stardist :cite:`Weigert_2020` and TrackMate :cite:`TINEVEZ201780` for automated cell tracking. This pipeline begins with the user loading cell images and centroid approximations to the ZeroCostDL4Mic :cite:`von2021democratising` platform. ZeroCostDL4Mic is a deep learning training tool for those with no coding expertise. Once the platform is trained and masks for the training set are made for hand-drawn annotations, the training set can be input to Stardist. Stardist performs automated object detection using Euclidean distance to probabilistically determine cell pixels versus background pixels. Lastly, Trackmate uses segmentation images to track labels between timeframes and display analytics.
+
+This Stardist pipeline is similar in concept to TSeg. Both create an automated segmentation and tracking pipeline but TSeg is oriented to 3D data. Cells move in 3-dimensional space that is not represented in a flat plane. TSeg also does not require the manual training necessary for the other pipeline. Individuals with low technical expertise should not be expected to create masks for training or even understand the training of deep neural networks. Lastly, this pipeline does not account for imperfect datasets without the need for preprocessing. All implemented algorithms in TSeg account for microscopy images with some amount of noise.
+
+Wen et al. :cite:`Wen2021-bn` combines multiple existing new technologies including deep learning and presents 3DeeCellTracker. 3DeeCellTracker segments and tracks cells on 3D time-lapse images. Using a small subset of their dataset they train the deep learning architecture 3D U-Net for segmentation. For tracking, a combination of two strategies was used to increase accuracy: local cell region strategies, and spatial pattern strategy. Kapoor et al. :cite:`kapoor2021cell` presents VollSeg that uses deep learning methods to segment, track, and analyze cells in 3D with irregular shape and intensity distribution. It is a Jupyter Notebook-based Python package and also has a UI in Napari. For tracking, a custom tracking code is developed based on Trackmate.
+
+Many segmentation tools require some amount of knowledge in Machine or Deep Learning concepts. Training the neural network in creating masks is a common step for open-source segmentation tools. Automating this process makes the pipeline more accessible to microbiology researchers.
+
+\section{Methodology}
 
 
 
-Image segmentation started with traditional methods and algorithms such as thresholding, watershed, and optical flow, which rely on pixel intensity. Traditional rule-based methods like Thresholding and Watershed analyze pixel values to identify borders and boundaries within areas of interest. Machine learning-based methods - such as Support Vector Machines (SVM), random forests, and contrastive learning - involve the use of statistical machine learning models and increased the popularity and applicability of segmentation. Finally, deep learning-based methods leverage neural networks to learn hierarchical feature representation from raw images without requiring manual feature engineering. This process saw significant improvement with the introduction of Convolutional Neural Networks (CNN). CNNs are trained to detect features in regions of interest, enabling them to perform similarly on new images. Segmentation techniques can be divided into three categories: supervised, semi-supervised, and unsupervised.
-
-U-Net and its variants are extensively adopted in biomedical image segmentation for their capability to automatically extract features from images without manual intervention or preprocessing. They can learn high-level semantic information and low-level spatial information from large-scale data. U-Net architectures are categorized based on their design and functionality. Basic U-Nets, like the original U-Net and 3D U-Net, are foundational, with the latter extending to 3D data for volumetric segmentation useful in CT and MRI scans. Advanced U-Nets include Attention U-Net, which uses attention mechanisms for precision; Inception U-Net, capturing multi-scale information through varied kernel sizes; Residual U-Net, which incorporates residual connections to aid deep network training; and Dense U-Net, promoting feature reuse via dense connections. Currently, CNNs represent the state-of-the-art in image segmentation, with U-Net being the predominant architecture, especially in the field of biomedical image segmentation. These advancements have greatly improved the accuracy and efficiency of biomedical image analysis, making it an essential tool in various fields of research.
-
-Biomedical images come in a vast variety of formats, types, and modalities. The modalities in medical imaging include computed tomography (CT), magnetic resonance imaging (MRI), positron emission tomography (PET), and ultrasound, while microscopy modalities include fluorescent microscopy, bright-field, lens-free microscopy, light microscopy, volume electron microscopy, and phase contrast microscopy, just to name a few. Similarly, due to the variety of biological structures, segmentation targets can vary from nuclei and cell membranes to organelles such as mitochondria, cilia, tumors, and lesions, as well as blood vessels, bone, and brain structures. This diversity in imaging techniques and segmentation targets highlights the need for specialized and customizable deep learning models in biomedical applications.
-
-The Segment Anything Model (SAM) can segment an object within an image using user inputs, including a single point, multiple points, an entire mask, a bounding box, or textual descriptions. This functionality is based on the model’s inherent ability to recognize objects, which enables it to segment unfamiliar object types without further training, effectively supporting zero-shot learning. Furthermore, the effectiveness of SAM is enhanced by its specialized architecture and the use of a significantly large dataset.
-\section{Challenges}
-Despite their success, CNN methods face challenges including poor generalizability, limited transferability, and the complexity of model development as well as fine-tuning pre-trained models in biomedical applications. This is due to the fact that manual labeling of data in biomedicine requires expert knowledge and is a costly and time-consuming task, making large and quality annotated datasets scarce. As a result, there exists a vast variety of deep learning models, each tailored to a specific modality and target structure. Unsupervised methods, on the other hand, do not require pre-training or an existing dataset and rely on domain-specific rules and heuristics. Although these methods exhibit less accuracy than CNN methods, they excel in reproducibility and generalizability as they do not depend on prior data knowledge. These different approaches to image segmentation provide a range of options for researchers to choose from, depending on their specific needs and resources.
-
-In the biomedical field, where labeled data is often scarce and costly to obtain, several solutions have been proposed to augment and utilize available data effectively. These include semi-supervised learning, which utilizes both labeled and unlabeled data to enhance learning accuracy by leveraging the data’s underlying distribution. Active learning focuses on selectively querying the most informative data points for expert labeling, optimizing the training process by using the most valuable examples. Data augmentation techniques, such as image transformations and synthetic data generation through Generative Adversarial Networks, increase the diversity and volume of training data, enhancing model robustness and reducing overfitting. Transfer learning transfers knowledge from one task to another, minimizing the need for extensive labeled data in new tasks. Self-supervised learning creates its labels by defining a pretext task, like predicting the position of a randomly cropped image patch, aiding in the learning of useful data representations. Additionally, few-shot, one-shot, and zero-shot learning techniques are designed to operate with minimal or no labeled examples, relying on generalization capabilities or metadata for making predictions about unseen classes.
-
-Generalizability refers to the trained model’s ability to perform well on unseen data outside of the training set. It is a crucial aspect of machine learning, particularly in biomedical applications, where variations in image acquisition conditions, tissue types, and other factors can be substantial. Data augmentation techniques and transfer learning are two excellent methods to overcome overfitting and improve generalizability where the training data is small. While transfer learning is a powerful technique for leveraging pre-trained models to boost performance, especially in scenarios with limited data, it does come with its own set of challenges and limitations such as domain mismatch, risk of overfitting, computational demands, and potential biases from the source dataset.
-
-Reproducibility refers to obtaining consistent results using the same input data, computational steps, methods, and conditions of analysis. This concept is key in scientific research to ensure that outcomes can be reliably replicated under the same conditions, fostering trust and confidence in the findings. Reproducibility is influenced by various factors including dataset variability, model architecture specifics, optimization procedures, and computational infrastructure. Apart from the loss of validity of a scientific method, non-reproducibility can lead to wasted resources, stalled scientific progress, erroneous conclusions, and significant ethical concerns. To ensure reproducibility in deep learning for medical image segmentation, Renard et al. advocate for comprehensive documentation, standardized practices, fixed random seeds, cross-validation, multiple evaluation metrics, and sharing of source code and dependencies.
-
-Deep learning models are effective across various applications but their usability depends on several factors such as the complexity of the task at hand, data availability, and the extent of necessary model customization. For users who prefer straightforward applications, ease of use is crucial. They benefit from methods that do not require extensive modifications or tuning to achieve optimal results. Incorporating an intuitive graphical user interface (GUI) and ensuring interactivity can enhance the usability of these tools, making them more accessible to non-expert users, such as biologists, who need practical, ready-to-use solutions without the intricacies of model adjustments.
 
 
 
@@ -37,60 +48,28 @@ Deep learning models are effective across various applications but their usabili
 
 
 
-% #############################################################################################
-%   This is where your content will go. There will be examples of figures, tables, citations, and footnotes/sidenotes in this section. In the source files, there will be examples and how to get them to appear on the TOC, LOF, and LOTs Some Diciplines use section and subsection headings more than others. The Chapter one is really all that matters. This is strictly to give the reader a sence of how they look on the TOC.
-%   \section{Your first section}
-%     How do you feel so far? In these next few subsections we are going to be illustrating how to do these different things in LaTeX. Hopefully you will be able to replicate it whenever you need them.
-%     It is good to have all of you images (figures) in their own folder so you can keep some organization to your projects.
-
-%     \subsection{Table Example}
-%       In this subsection, we are going to give an example of a table and how one will look. There are many ways to make a table and customize them. Here is one example:
-
-
-%     \begin{table}[ht]
-%       \centering
-
-%     \begin{tabular}[c]{|l|c|rc|}
-%       \hline
-%       left justified  & centerd  & right justified  & no left border\\
-%       \hline
-%       row 1 & fill & in between & the \&s\\
-%       row 2 & & &\\
-%       \hline
-%     \end{tabular}
-%     \caption{The Caption of the table.}
-%     \label{table:someTable}
-%     \end{table}
 
 
 
-%     \subsection{Figure Example}
-%     This is going to be an example of how to insert an image and it's caption. We can also reference it anywhere else in the document as well.
-%     \begin{figure}[h]
-%       \centering\includegraphics[width=0.5\textwidth]{figures/digilab_logo}
-%       \caption{The Digital Humanities Lab Logo}
-%       \label{fig:digilogo}
-%     \end{figure}
-%     The Digital Humanities logo, figure ~\ref{fig:digilogo} is one of many different prototypes.
 
-%     \subsection{Equation Examples}
-%       You can also reference an equation just like a figure and table. There are two different enviornments that are needed. The first is just using the equation enviornment. This is useful when you have one equation to write. As seen here:
-%         \begin{equation*}
-%           Y=\beta_{0} + \sum\limits_{i=1}^n \beta_{i}X_{i} + e
-%         \end{equation*}
-% The equation for the general multiple linear regression model is above. This is a good use case for the equation enviornment. \LaTeX  knows to expect math symbols inside the enviornment. What if you need more than one line? What if each line need to align? Thats when the align enviornment comes in handy. A lot of the times, you will need to show the simplification of equations or steps in calcualtions.
-% \begin{center}
-%   \begin{align*}
-%     P_{s}                & = \frac{D*F}{N*P*I}                         \\
-%     \\
-%                          & = \frac{D*R*W}{N*P*I} \text{  since } F=R*W \\
-%     \\
-%     0.70                 & = \frac{1*R*0.1}{2.5*1*4,294,967,295}       \\
-%     \\
-%     R                    & = 751619276625.0                            \\
-%     \\
-%     A=\frac{R*0.1}{4096} & \implies A = 1835007.99
-%   \end{align*}
-% \end{center}
 
+    Before diving into BibTex and how it all works, citing a figure or table that does not exist in the same subpage is also possible. Figure ~\ref{fig:digilogo} is on page ~\pageref{fig:digilogo}.
+    \section{The Bibliography}
+      In this section, we are going to dive into how LaTeX automates your citations and generates your bibliography on the fly. That way if you make any additions or deletions, LaTeX will handle all of that.
+      \subsection{BibTex File Formatting}
+        All of the citations will live in one file, in this case is called dissertation.bib. This file will have to follow a specific format. Each entry will start with an @ and following the type of entry. If it is a book, then it will start with @book\{...\}. Inside the brackets will contain all of the information about this entry. Fisrt it will have an ID that you will use to cite inside the tex files. Not sure of a convention, but each ID must be unique so something that pertains to the entry should suffice. There is a lot you can put with each entry, so \href{https://www2.cs.arizona.edu/~collberg/Teaching/07.231/BibTeX/bibtex.html}{here} is a link to all the different types and the different attributes each entry can have. Each attribute inside the curly brackets needs to be separated by a comma, but each entry just needs to be on its own line and not separated by a comma.
+      \subsection{Loading BibTex File}
+        If you look at the main file, \textit{disseration.tex}, there are two places that involve the bibliography. First is at the top where the command is \verb+\usepackage[backend=biber,style=apa,sorting=nyt]{biblatex}+. This lets you change the style and how the bibliography is sorted. Don't touch the \textit{backend=biber}. The next command is \verb+\addbibresource{dissertation.bib}+ further down before the actual document begins. This does not neet to be touched because it also needs to be called the same as the main file, besides the extention. This is how the compiler knows which file to grab.
+
+        Then lets take a look at the very bottom of \textit{dissertation.tex}, there will be two commands that are very important.
+        \begin{verbatim}
+          \addcontentsline{toc}{chapter}{Bibliography}
+          \printbibliography[title={Bibliography}]
+        \end{verbatim}
+        Unless you want to change the title of the bibliography or sort the bibliography, then you may want to touch this. Other than that, there is no need to mess with these two lines of the file.
+
+    \section{Inline Citations}
+    There are two commands that you will need to know. \verb+\cite & \parencite+. The way these are used is when you use these commands, you need to have provide the ID of the specific entry in the bib file. \verb+\cite{article1}+ produces \cite{article1} where as the other command adds parentheses around it. These will change when you change the style of the Bibliography from apa to mla or any other format.
+    \parencite{article1}
+    \parencite{article2}
 \end{document}
