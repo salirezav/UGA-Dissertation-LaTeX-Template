@@ -15,4 +15,5 @@
 .vscode/settings.json
 aim1.bib
 aim1.tex
-.bbl-SAVE-ERROR
+*.bbl-SAVE-ERROR
+
