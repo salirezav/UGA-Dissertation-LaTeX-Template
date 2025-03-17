@@ -1,0 +1,41 @@
+% !TEX root =../dissertation.tex
+\documentclass[./dissertation.tex]{subfiles}
+\begin{document}
+\chapter{Toward a Foundation Model for Biomedical Image Segmentation}
+
+\section{Introduction}
+
+1. Supervised methods require large annotated data to perform well. Their generalizability suffers. \\
+
+2. Unsupervised methods are good in that they don't need a lot of annotated data, but their accuracy is not as good and they can be very domain-specific. \\
+
+3. foundation models are trained on very large datasets. SAMs are good at zero-shot segmentation for they learn the repesentation of textures, objects, etc. they can take in prompts in the form of bounding boxes and points. these SAMs can potentially be a good easy to use choice for producing good-enough masks. \\
+
+4. How SAMs work. the internal mechanism that allows it to take points and generage masks. or just generate masks for all objects in the image. \\
+
+5. SAM struggles with biomedical images since it is originally trained on general images (e.g. horse, cat, cat, etc.). that's why it needs to be fine-tuned to be able to perform reliably for biomedical images. \\
+
+6. There are many biomedical adaptations for SAM, including this and that and the other one which do this and that and something else, each of which focusing on improving some aspect of SAM. They all show that their work has promising improvements. \\
+
+7. There's another set of research done on incorporating text prompts into SAM. it involves training text-image pairs first and the model uses contrastive learning to clusterize or localize the similar text-image embeddings. CLIP is a famous model. in inferrence, this CLIP model takes the prompt and image and tries to highlight the locations on the image which it finds relevant to the prompt. then some random points or bounding boxes are created using this heatmap and then passed to SAM for downstream segmentation. there are of course some biomedical adaptations of CLIP like BiomedCLIP. they perform great vs. the vanilla CLIP. \\
+
+8. But there is so much stochasticity and randomness within this process. from the way the CLIP model is trained or fine-tuned to how this inference is done and how the point and box prompts are selected. they all affect the final outcome of the SAM's mask decoder. \\
+
+9. that's why we're focusing on this part, aiming to find ways to control this randomness and increase the reproducibility of the CLIP, hence helping SAM in honing in on the ROI that best matches the prompt.
+
+
+\section{Background}
+
+1. SAM's original paper, and the subsequent SAM2. \\
+
+2. Biomedical adaptations of SAM and what they focus on. \\
+
+3. Biomedical adaptations of CLIP. some researches matched the best description to the image. some other did other things. \\
+
+
+
+
+
+
+
+\end{document}
