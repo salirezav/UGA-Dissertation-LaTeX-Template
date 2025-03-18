@@ -6,14 +6,17 @@
 \section{Introduction}
 
 1. Supervised methods require large annotated data to perform well. Their generalizability suffers. \\
-
 2. Unsupervised methods are good in that they don't need a lot of annotated data, but their accuracy is not as good and they can be very domain-specific. \\
 
+Biomedical image segmentation is pivotal across a diverse array of medical and biological applications, from diagnostic imaging to cellular analysis. While supervised segmentation methods, especially convolutional neural networks (CNNs), have achieved remarkable accuracy, their reliance on large, annotated datasets severely limits their generalizability and transferability, particularly in biomedical contexts where labeled data is scarce and costly to obtain. Conversely, unsupervised methods, despite being simpler and more generalizable, often fall short in segmentation precision and robustness, thus failing to meet the accuracy requirements of clinical and research settings.
+
+
 3. foundation models are trained on very large datasets. SAMs are good at zero-shot segmentation for they learn the repesentation of textures, objects, etc. they can take in prompts in the form of bounding boxes and points. these SAMs can potentially be a good easy to use choice for producing good-enough masks. \\
-
 4. How SAMs work. the internal mechanism that allows it to take points and generage masks. or just generate masks for all objects in the image. \\
-
 5. SAM struggles with biomedical images since it is originally trained on general images (e.g. horse, cat, cat, etc.). that's why it needs to be fine-tuned to be able to perform reliably for biomedical images. \\
+
+Recently, the emergence of Foundation Models (FMs) and the Segment Anything Model (SAM) offers a compelling new direction for addressing these limitations. SAM, introduced by Kirillov et al. (2023), marked a significant advancement by achieving impressive zero-shot segmentation capabilities across varied image domains, relying only on minimal user prompts such as points or bounding boxes. Its successor, SAM 2, further extends these capabilities into video segmentation, leveraging advanced architectures to improve accuracy and interaction efficiency (Ravi et al., 2024). These models are trained on large and diverse datasets, enabling them to generalize effectively across multiple segmentation tasks without extensive domain-specific training. Despite their potential, the application of general-purpose SAM models to biomedical imaging presents unique challenges. The complex and nuanced nature of biomedical images characterized by varying imaging modalities, structures, textures, and noise levels means that models trained primarily on general-domain images may struggle to achieve clinical-grade segmentation accuracy. Recognizing this, adaptations of SAM tailored specifically to biomedical contexts have emerged. Models such as MedSAM and MediViSTA-SAM demonstrate the feasibility of adapting SAM to medical imaging and video analysis, showing promising results that often surpass specialized, modality-specific models in robustness and accuracy (Ma et al., 2024; Kim et al., 2024).
+
 
 6. There are many biomedical adaptations for SAM, including this and that and the other one which do this and that and something else, each of which focusing on improving some aspect of SAM. They all show that their work has promising improvements. \\
 
@@ -33,9 +36,12 @@
 3. Biomedical adaptations of CLIP. some researches matched the best description to the image. some other did other things. \\
 
 
+\section{Methodology}
+1. my methodology involves fine-tuning BiomedCLIP on the dataset of cilia i have. the cilia dataset contains videos or nasal epithelial biopsy containing ciliary regions. these videos are annotated and the annotations show where the body of the cell is and where the ciliary region are. sometimes the ciliary region sticks out of the boundary of the cell which makes them easy to detect with eye and some other times they overlap the body of the cell or are out of focus which makes them very hard to detect even by human. anyway. I finetune the BiomedCLIP model using masked images of cell bodies and masked images of cilia along with their respective textual descriptions and then use the model to infer on unseen data. my aim is to find out which factors undermine the reproducibility of this process. those are: fine-tuning the model and for how long and how much, the text descriptions of the patches, whether using masked images or raw images, and - finally when the BiomedCLIP spits out a heatmap of its predictions - what's the best strategy in selecting positive/negative points or bounding boxes considering the output of the BiomedCLIP - that is going to be the input of SAM - to make sure we get accurate and reproducible results
 
+\section{Results and Discussion}
 
-
+\section{Conclusion and Final Remarks}
 
 
 \end{document}
