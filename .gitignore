@@ -11,7 +11,7 @@
 *.out
 *.run.xml
 *.toc
-*.synctex.gz
+*.synctex*
 .vscode/settings.json
 aim1.bib
 aim1.tex
