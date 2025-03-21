@@ -95,9 +95,105 @@ We employed selected datasets from the Cell Tracking Challenge (CTC), which offe
 
 BiomedCLIP, a contrastive vision-language model tailored specifically for biomedical domains, integrates effectively with segmentation frameworks like SAM, exemplified by models such as MedCLIP-SAMv2. Trained on 15 million biomedical image-text pairs from PubMed Central, BiomedCLIP leverages a vision transformer (ViT) for image encoding and PubMedBERT \cite{gu2021domain} for text encoding. Through contrastive learning, it aligns related images and textual descriptions into a joint embedding space. Unlike general-purpose models like CLIP \cite{radford2021learning}, BiomedCLIP captures nuanced, domain-specific features, making it uniquely suited for precise biomedical image analysis tasks, including saliency-driven segmentation.
 
-Figure ??? shows the off the shelf performance of BiomedCLIP over the CTC dataset. 
+Figure ??? shows the off the shelf performance of BiomedCLIP over the CTC dataset.
 \subsubsection{Fine-Tuning Strategies}
+% Fine-tuning is done on BiomedCLIP's pretrained \(BiomedCLIP-PubMedBERT_256-vit_base_patch16_224\) model in batches of size 32, and \(1e-3\) as the learning reate, weight decay set to 0.1, for 32 epochs, using DHN-NCE loss introduced in MedCLIP-SAMv2. Model checkpoints are saved after each epoch.
 
+% we changed these parameters in fine-tuning for the cilia dataset: 1. tuning for less/more epochs. 2. tuning with raw images vs. training with masks of cells and cilia. 3. tuning with long descriptions vs. short descriptions. 4. tuning by varying loss funciton parameters.
+
+
+To investigate the impact of different fine-tuning parameters on BiomedCLIP's performance for cilia segmentation, we systematically varied several key factors. These included adjusting the number of training epochs, comparing fine-tuning on raw images versus masked images (isolating cell bodies and ciliary structures), utilizing varying lengths of textual descriptions (short versus detailed versus randomized detailed annotations with the help of ChatGPT), and experimenting with different configurations of loss function parameters. The parameter variations are summarized in Table~\ref{tab:fine-tune-params}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Fine-Tuning Parameter Variations}
+    \label{tab:fine-tune-params}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Parameter}       & \textbf{Variation Descriptions}                           \\ \midrule
+        Number of Epochs         & 2 epochs vs. 32 epochs                                    \\
+        Input Images             & Raw images vs. Masked images                              \\
+        Textual Descriptions     & Concise vs. Detailed Vs. Randomized detailed descriptions \\
+        Loss Function Parameters & Default settings vs. Adjusted weighting schemes           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+% (\texttt{BiomedCLIP-PubMedBERT\_256-vit\_base\_patch16\_224})
+The fixed parameters for fine-tuning included the pretrained BiomedCLIP model, a batch size of 32, learning rate of \(1\times10^{-3}\), weight decay of 0.1, training duration of 32 epochs, and the DHN-NCE loss introduced in MedCLIP-SAMv2. Model checkpoints were saved after each epoch.
+
+
+
+\subsubsection{DHN-NCE Loss Function}
+% The Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE) loss is an enhancement of the standard InfoNCE loss used in contrastive learning. It is designed to mitigate issues such as the negative-positive-coupling (NPC) effect, which reduces learning efficiency, especially for small batch sizes. DHN-NCE achieves this by:
+% \begin{itemize}
+
+%     \item Decoupling positive samples from the denominator of the contrastive loss, improving optimization.
+%     \item Incorporating hard negative sampling, which gives more importance to difficult negative samples, improving model learning.
+
+% \end{itemize}
+% The loss is computed separately for image-to-text \((Lv \rightarrow t)\) and text-to-image \((Lt \rightarrow v)\) contrastive learning and then summed:
+
+
+The Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE) loss is designed to improve contrastive learning by decoupling positive samples from the denominator and introducing hard negative sampling. The loss function consists of two terms: one for image-to-text learning and another for text-to-image learning.
+
+\paragraph{Loss Definition\\}
+
+The overall DHN-NCE loss is defined as:
+\begin{equation}
+    L_{\text{DHN-NCE}} = L_{v \to t} + L_{t \to v}
+\end{equation}
+
+Each term is computed as follows:
+
+\begin{equation}
+    L_{v \to t} = -\sum_{i=1}^{B} \frac{I_{p,i} T_{p,i}^\top}{\tau} + \sum_{i=1}^{B} \log \left( \sum_{j \neq i} e^{I_{p,i} T_{p,j}^\top / \tau} W_{v \to t} \right)
+\end{equation}
+
+\begin{equation}
+    L_{t \to v} = -\sum_{i=1}^{B} \frac{T_{p,i} I_{p,i}^\top}{\tau} + \sum_{i=1}^{B} \log \left( \sum_{j \neq i} e^{T_{p,i} I_{p,j}^\top / \tau} W_{t \to v} \right)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item \( I_{p,i} \) and \( T_{p,i} \) are the normalized image and text features.
+    \item \( B \) is the batch size.
+    \item \( \tau \) is the temperature parameter controlling the sharpness of the distribution.
+    \item \( W_{v \to t} \) and \( W_{t \to v} \) are hardness weights for negative samples.
+\end{itemize}
+
+\paragraph{Hardness Weighting Factors\\}
+
+The hardness weighting factors are defined as:
+
+\begin{equation}
+    W_{v \to t} = (B-1) \times \frac{e^{\beta_1 I_{p,i} T_{p,j}^\top / \tau}}{\sum_{k \neq i} e^{\beta_1 I_{p,i} T_{p,k}^\top / \tau}}
+\end{equation}
+
+\begin{equation}
+    W_{t \to v} = (B-1) \times \frac{e^{\beta_2 T_{p,i} I_{p,j}^\top / \tau}}{\sum_{k \neq i} e^{\beta_2 T_{p,i} I_{p,k}^\top / \tau}}
+\end{equation}
+
+
+\begin{table}
+    \caption{Effects of parameter changes on DHN-NCE loss.}
+    \centering
+    % \renewcommand{\arraystretch}{1.2}
+    \label{tbl:param_change_effect}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Parameter}                & \textbf{Effect of Increasing}           & \textbf{Effect of Decreasing}          \\
+        \hline
+        Temperature (\( \tau \))          & Smoother similarity distribution        & Sharper contrast, possible instability \\
+        \hline
+        Hardness (\( \beta_1, \beta_2 \)) & Emphasizes difficult negatives          & Less focus on hard negatives           \\
+        \hline
+        Positive Weight (\( \alpha \))    & More weight on positives, less contrast & Stronger negative differentiation      \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+Table \ref{tbl:param_change_effect} describes the effects of increasing or decreasing each of the loss-function parameters.
 
 
 
