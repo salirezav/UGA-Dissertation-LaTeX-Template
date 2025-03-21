@@ -134,7 +134,8 @@ The fixed parameters for fine-tuning included the pretrained BiomedCLIP model, a
 % The loss is computed separately for image-to-text \((Lv \rightarrow t)\) and text-to-image \((Lt \rightarrow v)\) contrastive learning and then summed:
 
 
-The Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE) loss is designed to improve contrastive learning by decoupling positive samples from the denominator and introducing hard negative sampling. The loss function consists of two terms: one for image-to-text learning and another for text-to-image learning.
+The Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE) loss is designed to improve contrastive learning by decoupling positive samples from the denominator and introducing hard negative sampling. The loss function consists of two terms: one for image-to-text learning and another for text-to-image learning. Table \ref{tbl:param_change_effect} describes the effects of increasing or decreasing each of the loss-function parameters.
+
 
 \paragraph{Loss Definition\\}
 
@@ -193,11 +194,14 @@ The hardness weighting factors are defined as:
 \end{table}
 
 
-Table \ref{tbl:param_change_effect} describes the effects of increasing or decreasing each of the loss-function parameters.
+\subsubsection{Evaluation of BiomedCLIP Predictions}
 
+To quantitatively assess the accuracy of the generated heatmaps, a thresholding method was required prior to computing evaluation metrics such as Dice coefficient and Intersection over Union (IoU) against ground-truth masks. Our experiments indicated that the threshold selection critically influences the evaluation outcomes, and the optimal threshold value differs markedly across various fine-tuning configurations. Specifically, models with minimal or no fine-tuning necessitated relatively lower thresholds, whereas models subjected to extensive fine-tuning required comparatively higher thresholds to achieve optimal segmentation performance.
 
 
 \section{Results and Discussion}
+
+
 
 \section{Conclusion and Final Remarks}
 
