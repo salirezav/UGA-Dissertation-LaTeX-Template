@@ -95,7 +95,14 @@ We employed selected datasets from the Cell Tracking Challenge (CTC), which offe
 
 BiomedCLIP, a contrastive vision-language model tailored specifically for biomedical domains, integrates effectively with segmentation frameworks like SAM, exemplified by models such as MedCLIP-SAMv2. Trained on 15 million biomedical image-text pairs from PubMed Central, BiomedCLIP leverages a vision transformer (ViT) for image encoding and PubMedBERT \cite{gu2021domain} for text encoding. Through contrastive learning, it aligns related images and textual descriptions into a joint embedding space. Unlike general-purpose models like CLIP \cite{radford2021learning}, BiomedCLIP captures nuanced, domain-specific features, making it uniquely suited for precise biomedical image analysis tasks, including saliency-driven segmentation.
 
-Figure ??? shows the off the shelf performance of BiomedCLIP over the CTC dataset.
+\begin{figure}[h]
+    \centering\includegraphics[width=.48\textwidth]{figures/sam/untuned1.png}
+    \centering\includegraphics[width=.48\textwidth]{figures/sam/untuned2.png}
+    \caption{BiomedCLIP's out-of-the-box performance over CTC's 2D datasets}
+    \label{fig:untuned}
+\end{figure}
+
+Figure \ref{fig:untuned} shows the off the shelf performance of BiomedCLIP over 2D datasets in CTC.
 \subsubsection{Fine-Tuning Strategies}
 % Fine-tuning is done on BiomedCLIP's pretrained \(BiomedCLIP-PubMedBERT_256-vit_base_patch16_224\) model in batches of size 32, and \(1e-3\) as the learning reate, weight decay set to 0.1, for 32 epochs, using DHN-NCE loss introduced in MedCLIP-SAMv2. Model checkpoints are saved after each epoch.
 
