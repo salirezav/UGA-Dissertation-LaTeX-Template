@@ -208,6 +208,19 @@ To quantitatively assess the accuracy of the generated heatmaps, a thresholding 
 
 \section{Results and Discussion}
 
+Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}
+
+
+our experiments showed that fine-tuning the model on full images severely damages the accuracy of the model making it incapable of localizing the region of interest in any of the test. we performed fine-tuning for 2 and 32 epochs and the results were the same, although the heatmaps generated after 32 epochs were lighting up more specific regions.
+
+training on full size vs small size didn't make any difference.
+
+\begin{figure}[h]
+    \centering\includegraphics[width=.8\textwidth]{figures/sam/untuned short med long.png}
+    \caption{BiomedCLIP's out-of-the-box performance in generating saliency maps for the cilia dataset. The \textit{GT Mask} represents the ground-truth annotated mask for the sasmple image. The bright spots on the saliency maps represent thresholded to only include values over 0.5 }
+    \label{fig:untuned_short_med_long}
+\end{figure}
+
 
 
 \section{Conclusion and Final Remarks}
