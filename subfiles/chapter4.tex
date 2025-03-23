@@ -315,5 +315,12 @@ Overall, these findings highlight the importance of targeted masking, controlled
 
 \section{Conclusion and Final Remarks}
 
+Our findings clearly demonstrate that minimal fine-tuning of a vision-foundation model like BiomedCLIP can significantly enhance the accuracy and stability of generated saliency maps, facilitating more effective segmentation tasks. This fine-tuning is particularly impactful when employing targeted masking strategies and carefully managed training epochs.
+
+Furthermore, the method for selecting points or bounding boxes from these saliency maps plays a crucial role in the effectiveness of segmentation models such as SAM. Unlike MedclipSAMv2, which randomly selects points from only the largest contour on thresholded saliency maps, our results indicate that this is not always optimal. Regions of interest (RoIs) can be sparse or distributed across multiple contours, and the performance of the foundational vision model (BiomedCLIP) heavily influences whether selecting single or multiple contours yields better segmentation outcomes.
+
+Additionally, our experiments revealed that text-promptable SAM, used off-the-shelf, can provide satisfactory segmentation results under specific conditions—particularly when RoI boundaries are clearly defined, enclosed, and free of overlap or artifacts. However, for broader applicability and improved accuracy, fine-tuning of SAM is essential. This fine-tuning, guided by the insights derived from our BiomedCLIP experiments, can enhance the quality of saliency maps, thereby improving the selection of effective points or bounding boxes for SAM inputs.
+
+Ultimately, our research emphasizes the necessity and potential of targeted fine-tuning strategies in both vision-foundation models and segmentation frameworks to optimize performance across various biomedical image segmentation tasks.
 
 \end{document}
