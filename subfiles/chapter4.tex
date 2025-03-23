@@ -103,6 +103,8 @@ BiomedCLIP, a contrastive vision-language model tailored specifically for biomed
 \end{figure}
 
 Figure \ref{fig:untuned} shows the off the shelf performance of BiomedCLIP over 2D datasets in CTC.
+
+
 \subsubsection{Fine-Tuning Strategies}
 % Fine-tuning is done on BiomedCLIP's pretrained \(BiomedCLIP-PubMedBERT_256-vit_base_patch16_224\) model in batches of size 32, and \(1e-3\) as the learning reate, weight decay set to 0.1, for 32 epochs, using DHN-NCE loss introduced in MedCLIP-SAMv2. Model checkpoints are saved after each epoch.
 
@@ -208,20 +210,108 @@ To quantitatively assess the accuracy of the generated heatmaps, a thresholding 
 
 \section{Results and Discussion}
 
-Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}
+% Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}. un-tuned BiomedCLIP struggled to detect ciliary regions.
 
 
-our experiments showed that fine-tuning the model on full images severely damages the accuracy of the model making it incapable of localizing the region of interest in any of the test. we performed fine-tuning for 2 and 32 epochs and the results were the same, although the heatmaps generated after 32 epochs were lighting up more specific regions.
 
-training on full size vs small size didn't make any difference.
 
-\begin{figure}[h]
-    \centering\includegraphics[width=.8\textwidth]{figures/sam/untuned short med long.png}
-    \caption{BiomedCLIP's out-of-the-box performance in generating saliency maps for the cilia dataset. The \textit{GT Mask} represents the ground-truth annotated mask for the sasmple image. The bright spots on the saliency maps represent thresholded to only include values over 0.5 }
+% our experiments showed that fine-tuning the model on full images severely damages the accuracy of the model making it incapable of localizing the region of interest in any of the test. we performed fine-tuning for 2 and 32 epochs and the results were the same, although the heatmaps generated after 32 epochs were lighting up more specific regions.
+
+% training on full size vs small size didn't make any difference.
+% more epochs = throwig weight off
+% training with validation set causes overfitting and the model to perform terribly.
+% short descriptions + short prompts were more consistent. long descriptions led to more false positives and false negatives.
+% no significant impact for changing beta 1 or 2.
+% increasing temperature or alpha = no significant difference except throwing the model off on some hard to detect cilia on some images.
+% increasing both temp and alpha produced inconsistency and reduced reproducibility.
+
+% --temperature-dhnnce 0.1  --alpha-dhnnce 0.9  --beta1-dhnnce 0.95  --beta2-dhnnce 0.05  more sensitive to text prompt differences. med prompts were terrible
+
+% --temperature-dhnnce 0.1 \
+% --alpha-dhnnce 0.9 \
+% --beta1-dhnnce 0.95 \
+% --beta2-dhnnce 0.05 and long captions while training + short prompts
+
+% --temperature-dhnnce 0.1 \
+% --alpha-dhnnce 0.9 \
+% --beta1-dhnnce 0.65 \
+% --beta2-dhnnce 0.65 and long captions = best performance. more ability to detect different points. less false negatives more false positives.
+
+% --temperature-dhnnce 0.1 \
+% --alpha-dhnnce 0.9 \
+% --beta1-dhnnce 0.95 \
+% --beta2-dhnnce 0.15 i think the best is training with long captions ptompting with short texts
+
+% \subsubsection{varying prompts}
+% short to the point prompts =less errors i.e. less false positives, more aligned with RoI
+% training on short captions requires short prompts. training on long captions work better with more detailed prompts.
+
+Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}. Un-tuned BiomedCLIP struggled to detect ciliary regions consistently across different prompt lengths.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sam/untuned short med long.png}
+    \caption{Performance of off-the-shelf BiomedCLIP with short, medium, and detailed prompts, demonstrating poor localization without fine-tuning.}
     \label{fig:untuned_short_med_long}
 \end{figure}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned no mask ep 32.png}
+    \caption{Localization results after fine-tuning BiomedCLIP for 32 epochs on full images without masks, showing incorrect and overly specialized localization.}
+    \label{fig:fine_tuned_no_mask_ep32}
+\end{figure}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned 1ep with mask short caption th 0.4.png}
+    \caption{Improved ciliary region localization after fine-tuning BiomedCLIP for one epoch using masked images with short captions.}
+    \label{fig:fine_tuned_mask_short_ep1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned masks small train short desc ep5.png}
+    \caption{Effective and balanced localization achieved by fine-tuning BiomedCLIP with a reduced dataset size (small train) using masked images and short captions for 5 epochs.}
+    \label{fig:fine_tuned_mask_small_short_ep5}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/train with long captions.png}
+    \caption{Localization results demonstrating increased flexibility but higher false positives when fine-tuning BiomedCLIP using long captions.}
+    \label{fig:train_long_captions}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned with mask th 0.4.png}
+    \caption{Localization impact of higher temperature (\(\tau = 0.4\)) during fine-tuning, resulting in blurred similarity distributions and compromised accuracy.}
+    \label{fig:fine_tuned_with_mask_th_0_4}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned masks long captions small train 01 09 095 005.png}
+    \caption{Impact of increased hardness parameters (\(\beta_1=0.65\), \(\beta_2=0.65\)) during fine-tuning, showing improved localization diversity but higher false-positive rates.}
+    \label{fig:fine_tuned_masks_small_train_01_09_095_005}
+\end{figure}
+
+
+
+Fine-tuning experiments demonstrated significant variability in performance based on training strategies and parameters. Training BiomedCLIP on full images or for an excessive number of epochs (e.g., 32 epochs) severely reduced accuracy and hindered region-of-interest (RoI) localization, as depicted in Figure \ref{fig:fine_tuned_no_mask_ep32}, where highly localized but incorrect regions indicate over-specialization and loss of generalization. Conversely, incorporating masks specifically targeting ciliary regions and limiting training to shorter durations (approximately 1–5 epochs) dramatically improved model performance and enabled accurate RoI localization, as illustrated by Figures \ref{fig:fine_tuned_mask_short_ep1} and \ref{fig:fine_tuned_mask_small_short_ep5}.
+
+Reducing the training set size to approximately one-third (labeled as "small train") had minimal negative impact on model accuracy, suggesting that a smaller but carefully curated dataset is sufficient for effective fine-tuning (Figure \ref{fig:fine_tuned_mask_small_short_ep5}).
+
+Analyzing caption length effects revealed that training with short captions provided consistent outcomes, characterized by fewer false positives and improved alignment with regions of interest, particularly when paired with short prompts. Training with long captions increased the model's flexibility to identify cilia across diverse scenarios; however, this came at the cost of higher false positives and inconsistencies unless paired with carefully tuned parameters and prompts (Figure \ref{fig:train_long_captions}).
+
+Detailed analysis of the contrastive loss parameters showed notable sensitivity. Temperature () values around 0.1 provided sharper, clearer contrasts, significantly aiding localization. Conversely, higher temperatures () blurred similarity distributions, compromising localization accuracy (Figure \ref{fig:fine_tuned_with_mask_th_0_4}). Positive weight () around 0.9 consistently yielded stable results, balancing positive emphasis and contrast effectively.
+
+Hardness parameters () were critical in performance optimization. Particularly, a moderate increase in  to approximately 0.15 provided an optimal balance, emphasizing challenging negatives without causing instability or excessive false positives. Higher equal values, such as , , improved localization diversity but introduced more false positives (Figure \ref{fig:fine_tuned_masks_small_train_01_09_095_005}).
+
+Prompt strategies significantly influenced model behavior. Although short, concise prompts yielded fewer errors and better alignment with RoI, detailed prompts that explicitly referenced ciliary features demonstrated improved RoI detection, particularly when training involved longer captions. Medium-length prompts containing ambiguous references to both cilia and cell bodies resulted in inconsistencies, particularly notable in masked experiments separating ciliary regions and cellular bodies. Hence, detailed prompts, clearly referencing targeted regions, facilitated more accurate localization when combined with appropriately tuned contrastive parameters.
+
+Overall, these findings highlight the importance of targeted masking, controlled training epochs, careful dataset curation, and parameter tuning for effective fine-tuning of BiomedCLIP in biomedical image localization tasks.
 
 \section{Conclusion and Final Remarks}
 
