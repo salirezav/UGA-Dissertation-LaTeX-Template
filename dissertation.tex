@@ -40,7 +40,15 @@
 %--------------------------ABSTRACT---------------------------%
 \input{metafiles/abstractpage.tex}
 \makeabstract{%
-  This section of the page is where your abstract will go. Fill in this spot in the dissertation.tex file with your abstract. Doctoral 350 words max, 150 max for masters.
+  % This section of the page is where your abstract will go. Fill in this spot in the dissertation.tex file with your abstract. Doctoral 350 words max, 150 max for masters.
+
+  Biomedical image segmentation is crucial for accurate diagnostics, treatment planning, and biological research. However, biomedical images present unique challenges due to their diverse modalities, complex biological structures, and the scarcity or high cost associated with acquiring large annotated datasets. While convolutional neural networks (CNNs) have significantly advanced segmentation accuracy, their effectiveness remains limited by poor generalizability, as they often require extensive labeled data and domain-specific adjustments.
+
+  Self-supervised, semi-supervised, and unsupervised methods offer valuable choises in scenarios where annotated data is unavailable or when domain-specific knowledge and cues can be leveraged to guide segmentation. Nevertheless, such methods often face challenges concerning accuracy, robustness, and domain-specific variability, hindering their broader adoption in clinical practice and research.
+
+  Recently, foundation models, particularly the Segment Anything Model (SAM), have introduced new possibilities in biomedical segmentation. Trained on extensive datasets, SAM demonstrates a capability for generalized segmentation tasks through zero-shot learning, presenting a potential solution to domain-specific limitations. However, SAM's application in biomedical contexts requires careful fine-tuning to overcome performance issues resulting from domain gaps.
+
+  This dissertation addresses the critical gaps across these segmentation approaches. First, a supervised segmentation pipeline (Chapter 1) is presented, offering comprehensive 3D cell instance segmentation, tracking, and motility classification of Toxoplasma gondii, aiming to enhance accuracy, usability, and robustness in supervised contexts. Subsequently, Chapters 2 and 3 focus on unsupervised and minimally supervised approaches. Chapter 2 proposes a novel self-supervised method for accurate cilia segmentation using pseudo-labels derived from motion data, significantly reducing manual annotation effort. Chapter 3 explores minimally supervised segmentation through contrastive learning, improving model generalizability and segmentation accuracy across various biomedical imaging modalities. Finally, Chapter 4 evaluates the potential of SAM in biomedical segmentation, demonstrating strategies to adapt and fine-tune foundation models to reliably perform segmentation tasks across diverse biomedical domains.
 }%
 
 
