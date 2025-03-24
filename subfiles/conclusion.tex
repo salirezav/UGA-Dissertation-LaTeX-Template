@@ -1,6 +1,19 @@
+% !TEX root =../dissertation.tex
 \documentclass[./dissertation.tex]{subfiles}
 \begin{document}
-    \chapter{Conclusion}
-    \label{ch:conclusion} 
-    This is where your Conclusion will go
+\chapter{Conclusion}
+\label{ch:conclusion}
+% This is where your Conclusion will go
+
+This dissertation systematically addressed critical challenges in biomedical image segmentation by developing and evaluating supervised, self-supervised, minimally supervised, and foundational segmentation methodologies. The primary goal was to enhance segmentation accuracy, generalizability, and practical usability across diverse biomedical imaging scenarios.
+
+In Chapter 2, we introduced TSeg, a comprehensive pipeline explicitly designed for 3D cell segmentation, tracking, and motility analysis, exemplified by \textit{Toxoplasma gondii}. TSeg integrates robust CNN-based segmentation models with intuitive GUI-based workflows, enabling high accuracy and broad applicability, even for non-expert users. Evaluation on diverse Cell Tracking Challenge datasets demonstrated that TSeg provides robust performance across multiple cell types and imaging modalities, highlighting its potential for broader adoption in biomedical research and clinical applications.
+
+Chapter 3 explored a novel self-supervised segmentation approach utilizing motion-derived pseudo-labels to overcome the need for extensive manual annotations in cilia segmentation. This method leveraged optical flow and autoregressive modeling, effectively capturing motion patterns to generate reliable segmentation masks. The approach was validated using dyskinetic cilia datasets, demonstrating that self-supervised methods can significantly reduce annotation burdens without compromising accuracy. This technique represents a promising direction for cost-effective and efficient biomedical segmentation.
+
+In Chapter 4, we advanced minimally supervised segmentation through contrastive learning techniques. By employing contrastive learning frameworks, we substantially reduced reliance on annotated data, demonstrating robust performance across various biomedical datasets. This approach notably improved generalization, facilitating accurate segmentation with significantly fewer annotations. The experimental results underscored the potential of minimally supervised learning methods to address data scarcity challenges inherent in biomedical imaging tasks.
+
+Finally, Chapter 5 investigated the adaptation of foundational segmentation models, specifically the Segment Anything Model (SAM), to biomedical image segmentation tasks. Through careful fine-tuning strategies, including dataset-specific masking and captioning approaches, we demonstrated substantial improvements in SAM's performance, enabling its application across diverse biomedical imaging modalities. The outcomes indicated that foundational models could effectively bridge the gap between general-purpose and domain-specific segmentation tasks, significantly enhancing segmentation flexibility and accessibility.
+
+Overall, the findings of this dissertation contribute significantly to biomedical image segmentation by demonstrating practical solutions that enhance accuracy, reduce annotation requirements, improve model generalization, and ensure usability in real-world biomedical applications. Future research directions include further refining foundational model fine-tuning strategies, exploring more sophisticated self-supervised approaches, and extending minimally supervised methods to additional biomedical imaging challenges. Such advancements promise to accelerate biomedical research and clinical practice, making accurate and efficient segmentation broadly accessible and impactful.
 \end{document}

@@ -129,9 +129,7 @@ To classify the motility pattern of \textit{\textit{T. gondii}} in 3D space in a
 
 
 \section{Evaluation}
-% TSeg's performance in segmentation was evaluated over datasets introduced in \cite{mavska2023cell}. The Cell Tracking Challenge (CTC) offers a diverse array of 2D and 3D time-lapse microscopy datasets, each capturing unique biological specimens under various imaging modalities. Table \ref{tbl:ctc_datasets} contains is an overview of these datasets, detailing the organisms studied, imaging techniques employed, and acquisition specifics. CellPose has 26 and PlantSeg has 17 different pretrained models that can perform segmentation over 2D and 3D biomedical data. 10 samples from the 2D datasets, and one from the 3D datasets were randomly selected and processed with each of the 43 models using the API provided by PlantSeg and CellPose. Each dataset contains sequences of time-lapse video frames, therefore sample of a 2D dataset is comprised of a single 2D grayscale image, and each sample from the 3D datasets has a stack of 2D images recorded simultaneously across the z-axis to comprise one frame. The prediced masks of the models were evaluated against the provided ground-truth data using the Jaccard Index (JI) score and averaged across all samples of the same dataset. Tables \ref{tbl:2d_segmentation_results} and \ref{tbl:3d_segmentation_results} show the average JI scores of the models for each dataset.
-
-We evaluated the performance of CellPose and PlantSeg using both 2D and 3D datasets to measure their segmentation accuracy comprehensively. Tables~\ref{tbl:cellpose_2d_segmentation} and~\ref{tbl:plantseg_2d_segmentation} present the performance metrics for CellPose and PlantSeg on various 2D datasets. Tables~\ref{tbl:cellpose_3d_segmentation} and~\ref{tbl:plantseg_3d_segmentation} summarize their performance on the 3D datasets.
+TSeg's performance in segmentation was evaluated over datasets introduced in \cite{mavska2023cell}. The Cell Tracking Challenge (CTC) offers a diverse array of 2D and 3D time-lapse microscopy datasets, each capturing unique biological specimens under various imaging modalities. Table \ref{tbl:ctc_datasets} contains is an overview of these datasets, detailing the organisms studied, imaging techniques employed, and acquisition specifics. CellPose has 26 and PlantSeg has 17 different pretrained models that can perform segmentation over 2D and 3D biomedical data. 10 samples from the 2D datasets, and one from the 3D datasets were randomly selected and processed with each of the 43 models using the API provided by PlantSeg and CellPose. Each dataset contains sequences of time-lapse video frames, therefore sample of a 2D dataset is comprised of a single 2D grayscale image, and each sample from the 3D datasets has a stack of 2D images recorded simultaneously across the z-axis to comprise one frame. The prediced masks of the models were evaluated against the provided ground-truth data using the Jaccard Index (JI) score and averaged across all samples of the same dataset. Tables~\ref{tbl:cellpose_2d_segmentation} and~\ref{tbl:plantseg_2d_segmentation} present the performance metrics for CellPose and PlantSeg on various 2D datasets. Tables~\ref{tbl:cellpose_3d_segmentation} and~\ref{tbl:plantseg_3d_segmentation} summarize their performance on the 3D datasets.
 
 
 \begin{table}[htbp]
@@ -384,29 +382,36 @@ Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively
 \end{table}
 
 
-\subsection{Performance on 2D Datasets}
+% \subsection{Performance on 2D Datasets}
 
-The results show that segmentation performance varies significantly across datasets and models. Key observations include:
-\textbf{Consistently High Performance:} Models such as \texttt{cyto3}, \texttt{nuclei}, and \\ \texttt{deepbacs\_cp3} achieved high IoU scores (above 0.95) across datasets such as \texttt{BF-C2DL-HSC} and \texttt{BF-C2DL-MuSC}, which suggests that these models are well-suited for segmenting brightfield microscopy images of stem cells. \\
+% The results show that segmentation performance varies significantly across datasets and models. Key observations include:
+% \textbf{Consistently High Performance:} Models such as \texttt{cyto3}, \texttt{nuclei}, and \\ \texttt{deepbacs\_cp3} achieved high IoU scores (above 0.95) across datasets such as \texttt{BF-C2DL-HSC} and \texttt{BF-C2DL-MuSC}, which suggests that these models are well-suited for segmenting brightfield microscopy images of stem cells. \\
 
-\textbf{Challenges with Certain Datasets:} The \texttt{DIC-C2DH-HeLa} dataset posed difficulties for most models, with average IoU scores significantly lower (around 0.36), indicating that differential interference contrast (DIC) microscopy images present unique segmentation challenges. \\
+% \textbf{Challenges with Certain Datasets:} The \texttt{DIC-C2DH-HeLa} dataset posed difficulties for most models, with average IoU scores significantly lower (around 0.36), indicating that differential interference contrast (DIC) microscopy images present unique segmentation challenges. \\
 
-\textbf{Moderate Performance for Fluorescence-Based Data:} Models generally performed better on fluorescence microscopy datasets such as \texttt{Fluo-C2DL-MSC}, but the performance varied across different fluorescent markers and imaging conditions. \\
+% \textbf{Moderate Performance for Fluorescence-Based Data:} Models generally performed better on fluorescence microscopy datasets such as \texttt{Fluo-C2DL-MSC}, but the performance varied across different fluorescent markers and imaging conditions. \\
 
-\textbf{Model-Specific Variability:} While some models performed well across multiple datasets, others showed strong dataset-specific biases, highlighting the importance of dataset-matching when selecting segmentation models. \\
+% \textbf{Model-Specific Variability:} While some models performed well across multiple datasets, others showed strong dataset-specific biases, highlighting the importance of dataset-matching when selecting segmentation models. \\
 
-\subsection{Performance on 3D Datasets \\}
+% \subsection{Performance on 3D Datasets \\}
 
-For the 3D datasets, the following trends emerged: \\
+% For the 3D datasets, the following trends emerged: \\
 
-\textbf{Superior Performance on Some Fluorescence Datasets:} Models like \texttt{PlantSeg\_3Dnuc\_platinum} and \texttt{lightsheet\_3D\_unet\_root\_ds2x} demonstrated high performance (IoU $\sim$0.96--0.97) on \texttt{Fluo-C3DH-A549} and \texttt{Fluo-C3DH-A549-SIM}, suggesting strong adaptability to fluorescence-based 3D segmentation. \\
+% \textbf{Superior Performance on Some Fluorescence Datasets:} Models like \texttt{PlantSeg\_3Dnuc\_platinum} and \texttt{lightsheet\_3D\_unet\_root\_ds2x} demonstrated high performance (IoU $\sim$0.96--0.97) on \texttt{Fluo-C3DH-A549} and \texttt{Fluo-C3DH-A549-SIM}, suggesting strong adaptability to fluorescence-based 3D segmentation. \\
 
-\textbf{Lower Performance on More Complex 3D Structures:} Datasets such as Fluo-N3DH-CE and Fluo-N3DH-CHO showed lower overall IoU scores, with some models failing to generalize well to these samples. \\
+% \textbf{Lower Performance on More Complex 3D Structures:} Datasets such as Fluo-N3DH-CE and Fluo-N3DH-CHO showed lower overall IoU scores, with some models failing to generalize well to these samples. \\
 
-\textbf{Sparse Data and Missing Values:} Several models had missing scores for certain datasets, indicating either difficulties in processing specific images or incompatibility with the dataset structure. \\
+% \textbf{Sparse Data and Missing Values:} Several models had missing scores for certain datasets, indicating either difficulties in processing specific images or incompatibility with the dataset structure. \\
 
 
 \section{Conclusion and Final Remarks}
-TSeg is an easy to use pipeline designed to study the motility patterns of \textit{\textit{T. gondii}} in 3D space. It is developed as a plugin for Napari and is equipped with a variety of deep learning based segmentation tools borrowed from PlantSeg and CellPose, making it a suitable off-the-shelf tool for applications incorporating images of cell types not limited to \textit{\textit{T. gondii}}. Future work on TSeg includes the expansion of implemented algorithms and tools in its preprocessing, segmentation, tracking, and clustering modules.
+% TSeg is an easy to use pipeline designed to study the motility patterns of \textit{\textit{T. gondii}} in 3D space. It is developed as a plugin for Napari and is equipped with a variety of deep learning based segmentation tools borrowed from PlantSeg and CellPose, making it a suitable off-the-shelf tool for applications incorporating images of cell types not limited to \textit{\textit{T. gondii}}. Future work on TSeg includes the expansion of implemented algorithms and tools in its preprocessing, segmentation, tracking, and clustering modules.
+
+In this work, we presented TSeg, an intuitive and comprehensive pipeline specifically designed for the segmentation, tracking, and motility clustering of \textit{Toxoplasma gondii} in 3D microscopic imaging data. Our pipeline leverages autoregressive parameterization to effectively capture temporal dependencies, successfully identifying distinct motility patterns and accurately clustering them based on their inherent characteristics. This approach provides insights into the complex motility behavior exhibited by \textit{T. gondii} throughout its lytic cycle, facilitating more detailed and quantitative analyses compared to conventional methods.
+
+One of the key contributions of our work is the seamless integration of state-of-the-art deep learning methodologies into an accessible and user-friendly platform. By incorporating powerful segmentation and detection tools such as CellPose and PlantSeg into TSeg, users benefit from high-performing deep learning algorithms without requiring extensive expertise in deep learning or computer vision frameworks. Additionally, our implementation of TSeg as a plugin for the Napari viewer further simplifies its adoption, providing interactive visualization and intuitive manipulation of 3D microscopy data.
+
+The user-friendly interface combined with advanced algorithmic capabilities makes TSeg broadly applicable not only to studies involving \textit{T. gondii} but also adaptable to various other cell types and organisms. Moving forward, we envision continuous enhancements in computational efficiency and scalability, further broadening the usability of TSeg across larger and more complex datasets. Ultimately, TSeg demonstrates significant potential in accelerating biological research by making sophisticated deep-learning-driven analyses accessible to a wider scientific audience.
+
 
 \end{document}
