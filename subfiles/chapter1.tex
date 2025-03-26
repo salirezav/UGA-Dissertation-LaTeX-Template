@@ -35,7 +35,7 @@ The recent solutions in generalized and automated segmentation tools are focused
 
 Fazli et al. \cite{fazli2018unsupervised} studies the motility patterns of \textit{T. gondii} and provides a computational pipeline for identifying motility phenotypes of \textit{T. gondii} in an unsupervised, data-driven way. In that work Ca2+ is added to \textit{T. gondii} cells inside a Fetal Bovine Serum. \textit{T. gondii} cells react to Ca2+ and become motile and fluorescent. The images of motile \textit{T. gondii} cells were captured using an LSM 710 confocal microscope. They use Python 3 and associated scientific computing libraries (NumPy, SciPy, scikit-learn, matplotlib) in their pipeline to track and cluster the trajectories of \textit{T. gondii}. Based on this work Fazli et al. \cite{fazli2018toward} work on another pipeline consisting of preprocessing, sparsification, cell detection, and cell tracking modules to track \textit{T. gondii} in 3D video microscopy where each frame of the video consists of image slices taken 1 micro-meters of focal depth apart along the z-axis direction. In their latest work Fazli et al. \cite{fazli2019lightweight} developed a lightweight and scalable pipeline using task distribution and parallelism. Their pipeline consists of multiple modules: reprocessing, sparsification, cell detection, cell tracking, trajectories extraction, parametrization of the trajectories, and clustering. They could classify three distinct motion patterns in \textit{T. gondii} using the same data from their previous work.
 
-While combining open source tools is not a novel architecture, little has been done to integrate 3D cell tracking tools. Fazeli et al. \cite{fazeli2020automated} motivated by the same interest in providing better tools to non-software professionals created a 2D cell tracking pipeline. This pipeline combines Stardist \cite{Weigert_2020} and TrackMate \cite{TINEVEZ201780} for automated cell tracking. This pipeline begins with the user loading cell images and centroid approximations to the ZeroCostDL4Mic \cite{von2021democratising} platform. ZeroCostDL4Mic is a deep learning training tool for those with no coding expertise. Once the platform is trained and masks for the training set are made for hand-drawn annotations, the training set can be input to Stardist. Stardist performs automated object detection using Euclidean distance to probabilistically determine cell pixels versus background pixels. Lastly, Trackmate uses segmentation images to track labels between timeframes and display analytics.
+While combining open-source tools is not a novel architecture, little has been done to integrate 3D cell tracking tools. Fazeli et al. \cite{fazeli2020automated}, motivated by the interest in providing robust yet accessible tools for researchers without programming expertise, developed a comprehensive pipeline combining StarDist \cite{Weigert_2020} and TrackMate \cite{TINEVEZ201780} for automated 2D cell tracking. This pipeline leverages the ZeroCostDL4Mic \cite{von2021democratising} platform, enabling researchers with no coding experience to train deep learning models on their own data, significantly lowering the barrier to entry. StarDist facilitates segmentation with star-convex polygon approximation, robustly distinguishing cells from the background even in challenging imaging conditions. TrackMate then uses these segmentation outputs to reliably track cells across timeframes, providing quantitative analytics such as velocity and trajectory characteristics. Despite its utility, the pipeline remains limited to 2D analysis, highlighting the need for extending such integrative approaches to 3D microscopy, as we propose with TSeg.
 
 This Stardist pipeline is similar in concept to TSeg. Both create an automated segmentation and tracking pipeline but TSeg is oriented to 3D data. Cells move in 3-dimensional space that is not represented in a flat plane. TSeg also does not require the manual training necessary for the other pipeline. Individuals with low technical expertise should not be expected to create masks for training or even understand the training of deep neural networks. Lastly, this pipeline does not account for imperfect datasets without the need for preprocessing. All implemented algorithms in TSeg account for microscopy images with some amount of noise.
 
@@ -43,7 +43,7 @@ Wen et al. \cite{Wen2021-bn} combines multiple existing new technologies includi
 
 Many segmentation tools require some amount of knowledge in Machine or Deep Learning concepts. Training the neural network in creating masks is a common step for open-source segmentation tools. Automating this process makes the pipeline more accessible to microbiology researchers.
 
-\section{Methods}
+\section{Methodologies}
 \subsection{Data}
 Our dataset consists of 11 videos of \textit{\textit{T. gondii}} cells under a microscope, obtained from different experiments with different numbers of cells. The videos are on average around 63 frames in length. Each frame has a stack of 41 image slices of size 500×502 pixels along the z-axis (z-slices). The z-slices are captured 1µm apart in optical focal length making them 402µm×401µm×40µm in volume. The slices were recorded in raw format as RGB TIF images but are converted to grayscale for our purpose. This data is captured using a PlanApo 20x objective (NA = 0.75) on a preheated Nikon Eclipse TE300 epifluorescence microscope. The image stacks were captured using an iXon 885 EMCCD camera (Andor Technology, Belfast, Ireland) cooled to -70°C and driven by NIS Elements software (Nikon Instruments, Melville, NY) as part of related research by Ward et al. \cite{TgPHIL1}. The camera was set to frame transfer sensor mode, with a vertical pixel shift speed of 1.0 µs, vertical clock voltage amplitude of +1, readout speed of 35MHz, conversion gain of 3.8×, EM gain setting of 3 and 2×2 binning, and the z-slices were imaged with an exposure time of 16ms.
 
@@ -288,9 +288,34 @@ However, during evaluation on 3D datasets, PlantSeg encountered challenges due t
 
 
 
-Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively perform cell segmentation tasks across a range of datasets and conditions, with CellPose providing a slightly more versatile and robust generalization across various cell types and PlantSeg excelling particularly in structured datasets. Understanding these limitations and strengths will inform users' selection of the most appropriate tool based on their dataset characteristics and computational constraints.
+Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively perform cell segmentation tasks across a range of datasets and conditions, with CellPose providing a slightly more versatile and robust generalization across various cell types and PlantSeg excelling particularly in structured datasets. Understanding these limitations and strengths will inform users' selection of the most appropriate tool based on their dataset characteristics and computational constraints. A comprehensive summary of segmentation performance metrics highlighting key comparative results between CellPose and PlantSeg on selected 2D and 3D datasets is presented in Table~\ref{tbl:master_summary_segmentation}. This table succinctly captures essential findings, facilitating quick comparisons and reinforcing the suitability of TSeg's modular design in addressing diverse biomedical segmentation challenges.
 
 
+
+
+% Master Table summarizing key segmentation results
+\begin{table}[!ht]
+    \centering
+    \caption{Comparative Summary of Segmentation Performance (Jaccard Index)}
+    \label{tbl:master_summary_segmentation}
+    \renewcommand{\arraystretch}{1.3}
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|l|c|c|c|l|}
+            \hline
+            \textbf{Dataset Name} & \textbf{Imaging Modality} & \textbf{Dimension} & \textbf{Best CellPose Model (JI)} & \textbf{Best PlantSeg Model (JI)}                       & \textbf{Comments}                                                      \\ \hline
+            BF-C2DL-HSC           & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Excellent performance by both tools                                    \\ \hline
+            BF-C2DL-MuSC          & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Consistently high accuracy                                             \\ \hline
+            DIC-C2DH-HeLa         & DIC                       & 2D                 & 0.36 (\texttt{cyto3})             & 0.36 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Low accuracy due to imaging complexity                                 \\ \hline
+            Fluo-C2DL-MSC         & Fluorescence              & 2D                 & 0.90 (\texttt{cyto3})             & 0.89 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Good accuracy, slight advantage for CellPose                           \\ \hline
+            Fluo-N2DH-GOWT1       & Fluorescence              & 2D                 & 0.89 (\texttt{cyto3})             & 0.86 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Moderate accuracy, CellPose slightly better                            \\ \hline
+            Fluo-N2DL-HeLa        & Fluorescence              & 2D                 & 0.75 (\texttt{cyto3})             & 0.75 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Equal performance by both tools                                        \\ \hline
+            Fluo-C3DH-A549        & Fluorescence              & 3D                 & 0.98 (\texttt{CPx})               & 0.96 (\texttt{generic\_confocal\_3D\_unet})             & CellPose robust, strong performance by PlantSeg                        \\ \hline
+            Fluo-C3DH-H157        & Fluorescence              & 3D                 & 0.93 (\texttt{cyto3})             & 0.88 (\texttt{generic\_confocal\_3D\_unet})             & Higher robustness observed in CellPose                                 \\ \hline
+            Fluo-N3DH-CE          & Fluorescence              & 3D                 & 0.80 (\texttt{CPx})               & 0.78 (\texttt{generic\_confocal\_3D\_unet})             & Computationally challenging, slight CellPose advantage                 \\ \hline
+            Fluo-N3DH-CHO         & Fluorescence              & 3D                 & 0.84 (\texttt{CPx})               & 0.84 (\texttt{generic\_confocal\_3D\_unet})             & Similar results for both tools                                         \\ \hline
+            Fluo-N3DH-SIM+        & Fluorescence              & 3D                 & 0.94 (\texttt{cyto2})             & ---                                                     & Computationally intensive; PlantSeg failed due to resource constraints \\ \hline
+        \end{tabular}}
+\end{table}
 
 
 
@@ -314,6 +339,9 @@ Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively
 % \textbf{Lower Performance on More Complex 3D Structures:} Datasets such as Fluo-N3DH-CE and Fluo-N3DH-CHO showed lower overall IoU scores, with some models failing to generalize well to these samples. \\
 
 % \textbf{Sparse Data and Missing Values:} Several models had missing scores for certain datasets, indicating either difficulties in processing specific images or incompatibility with the dataset structure. \\
+
+
+
 
 
 \section{Conclusion and Final Remarks}
