@@ -52,6 +52,7 @@ The dissertation is organized to comprehensively address these research question
 \begin{itemize}
 
     \item \textbf{Chapter \ref{ch:toxo}} introduces TSeg, a novel supervised segmentation pipeline explicitly designed for 3D cell instance segmentation, tracking, and motility classification, particularly optimized for noisy microscopy data such as those of \textit{Toxoplasma Gondii}. This chapter directly addresses challenges of robust supervised segmentation and practical usability, showcasing TSeg's effectiveness and generalizability to diverse cell types through user-friendly interfaces and optimized workflows.
+    \item \textbf{Chapter \ref{ch:toxo}} introduces TSeg, a novel supervised segmentation pipeline explicitly designed for 3D cell instance segmentation, tracking, and motility classification, particularly optimized for noisy microscopy data such as those of \textit{Toxoplasma Gondii}. This chapter directly addresses challenges of robust supervised segmentation and practical usability, showcasing TSeg's effectiveness and generalizability to diverse cell types through user-friendly interfaces and optimized workflows.
 
     \item \textbf{Chapter \ref{ch:cilia}} explores self-supervised segmentation methods, proposing an innovative pseudo-labeling strategy to significantly reduce annotation dependency. Utilizing motion-derived masks to generate pseudo-labels, this method addresses the scarcity of annotated datasets, particularly demonstrated in challenging cilia segmentation tasks where annotation efforts are costly and complex.
 
@@ -63,7 +64,7 @@ The dissertation is organized to comprehensively address these research question
 
 \end{itemize}
 
-% Chapter 2 rigorously evaluates supervised deep learning segmentation methods, emphasizing performance optimization, generalization improvement, and methodological enhancements across diverse biomedical imaging datasets. Chapter 3 explores unsupervised and self-supervised segmentation approaches, explicitly focusing on methods that reduce reliance on annotated data, critically evaluating their effectiveness and generalizability. Chapter 4 focuses on adapting and validating universal segmentation frameworks such as SAM, investigating their applicability, robustness, and performance across various biomedical modalities and segmentation targets. Finally, Chapter 5 synthesizes these findings, discusses implications, and suggests directions for future biomedical segmentation research.
+% Chapter \ref{ch:toxo} rigorously evaluates supervised deep learning segmentation methods, emphasizing performance optimization, generalization improvement, and methodological enhancements across diverse biomedical imaging datasets. Chapter \ref{ch:contrastive} explores unsupervised and self-supervised segmentation approaches, explicitly focusing on methods that reduce reliance on annotated data, critically evaluating their effectiveness and generalizability. Chapter \ref{ch:foundation} focuses on adapting and validating universal segmentation frameworks such as SAM, investigating their applicability, robustness, and performance across various biomedical modalities and segmentation targets. Finally, Chapter 5 synthesizes these findings, discusses implications, and suggests directions for future biomedical segmentation research.
 
 % }
 
@@ -108,7 +109,7 @@ Transfer learning leverages knowledge gained from previously trained models on r
 % }
 
 % \textcolor{BulldogRed}{
-Chapters \ref{ch:cilia} and \ref{ch:contrastive} directly address these limitations: Chapter \ref{ch:cilia} introduces self-supervised pseudo-labels derived from optical flow to segment cilia without manual masks, while Chapter \ref{ch:contrastive} leverages contrastive learning to substantially reduce annotation dependence on Cell Tracking Challenge datasets \cite{mavska2023cell}.
+Chapters \ref{ch:cilia} and \ref{ch:contrastive} directly address these limitations: Chapter \ref{ch:cilia} introduces self-supervised pseudo-labels derived from optical flow to segment cilia without manual masks, while Chapter \ref{ch:contrastive} leverages contrastive learning to reduce annotation dependence on Cell Tracking Challenge datasets \cite{mavska2023cell}.
 % }
 
 % \textcolor{Hedges}{Get rid of these three sentences please!} In the biomedical field, where labeled data is often scarce and costly to obtain, several solutions have been proposed to augment and utilize available data effectively. These include semi-supervised learning, which utilizes both labeled and unlabeled data to enhance learning accuracy by leveraging the data's underlying distribution. Active learning focuses on selectively querying the most informative data points for expert labeling, optimizing the training process by using the most valuable examples. Data augmentation techniques, such as image transformations and synthetic data generation through Generative Adversarial Networks, increase the diversity and volume of training data, enhancing model robustness and reducing overfitting. Transfer learning transfers knowledge from one task to another, minimizing the need for extensive labeled data in new tasks. Self-supervised learning creates its labels by defining a pretext task, like predicting the position of a randomly cropped image patch, aiding in the learning of useful data representations. Additionally, few-shot, one-shot, and zero-shot learning techniques are designed to operate with minimal or no labeled examples, relying on generalization capabilities or metadata for making predictions about unseen classes.
@@ -153,12 +154,24 @@ While deep learning models exhibit strong performance across biomedical segmenta
 % }
 
 % \textcolor{BulldogRed}{
-Developing intuitive graphical user interfaces (GUIs) and interactive tools substantially improves accessibility for non-expert users, such as biologists and clinical practitioners, who require practical segmentation solutions without extensive technical knowledge. Facilitating easier interaction with deep learning models through user-friendly software not only enhances usability but also accelerates adoption and effective integration into routine clinical practice and biomedical research workflows \cite{sofroniew2022napari}.
+Developing intuitive graphical user interfaces (GUIs) and interactive tools substantially improves accessibility for non-expert users, such as biologists and clinical practitioners, who require practical segmentation solutions without extensive technical knowledge. Facilitating easier interaction with deep learning models through user-friendly software not only enhances usability but also accelerates adoption and effective integration into routine clinical practice and biomedical research workflows \cite{sofroniew2022napari}. \\
 % }
 
 % \textcolor{BulldogRed}{
-Chapters 2 and 4 operationalize usability through tools like TSeg's Napari plugin for no-code 3D segmentation and an interactive GUI for thresholding contrastive saliency maps, enabling biologists to deploy advanced segmentation without computational expertise.
+% Chapters 2 and 4 operationalize usability through tools like TSeg's Napari plugin for no-code 3D segmentation and an interactive GUI for thresholding contrastive saliency maps, enabling biologists to deploy advanced segmentation without computational expertise.
 % }
+
+
+This dissertation addresses the outlined challenges explicitly:
+\begin{itemize}
+    \item \textbf{Chapter \ref{ch:toxo}} (Supervised Methods) addresses annotation-intensive supervised segmentation, enhancing usability and generalization through the TSeg pipeline.
+
+    \item \textbf{Chapter \ref{ch:cilia}} (Self-supervised Methods) introduces optical flow-driven pseudo-labeling to alleviate data scarcity.
+
+    \item \textbf{Chapter \ref{ch:contrastive}} (Minimally supervised) uses contrastive learning to mitigate annotation requirements, optimizing segmentation under limited supervision.
+
+    \item \textbf{Chapter \ref{ch:foundation}} (Foundation Models) evaluates the adaptation of universal SAM to diverse biomedical imaging, directly tackling the generalization and transferability challenges.
+\end{itemize}
 
 % \textcolor{Hedges}{Get rid of these three sentences please!} Deep learning models are effective across various applications but their usability depends on several factors such as the complexity of the task at hand, data availability, and the extent of necessary model customization. Incorporating an intuitive graphical user interface (GUI) and ensuring interactivity can enhance the usability of these tools, making them more accessible to non-expert users, such as biologists, who need practical, ready-to-use solutions without the intricacies of model adjustments. For users who prefer straightforward applications, ease of use is crucial. They benefit from methods that do not require extensive modifications or tuning to achieve optimal results.
 

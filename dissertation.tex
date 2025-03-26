@@ -46,22 +46,22 @@
   Biomedical image segmentation is essential for clinical diagnostics, treatment planning, and fundamental biological research. Yet, the diversity of imaging modalities, complex structures, and the limited availability of annotated datasets pose significant challenges. Although convolutional neural networks (CNNs) often deliver state-of-the-art performance, they typically require extensive labeled data and domain-specific adjustments, restricting their generalizability. To address these limitations, self-supervised and unsupervised segmentation methods have emerged, exploiting unlabeled or weakly labeled data to alleviate the annotation burden. However, these methods can struggle with segmentation accuracy and robustness when confronted with complex domain-specific variability. Recent advances in foundation models, particularly the Segment Anything Model (SAM), suggest a promising path forward. Trained on large-scale, diverse data, SAM enables generalized segmentation via zero-shot learning, indicating potential applicability across a range of biomedical imaging domains. Nonetheless, fine-tuning and adaptation are necessary to ensure reliable performance and reproducibility in specialized biomedical contexts. This dissertation bridges these critical gaps. This dissertation introduces a supervised pipeline for 3D cell instance segmentation, tracking, and motility classification, centering on \textit{Toxoplasma gondii}, alongside self-supervised and minimally supervised approaches that reduce the annotation burden and enhance model generalization across diverse imaging contexts. Additionally, the adaptation of foundation models such as SAM is explored, detailing fine-tuning techniques that empower reliable biomedical segmentation in specialized applications. Collectively, these contributions advance the field of biomedical imaging by mitigating annotation requirements, improving robustness, and widening applicability. By synthesizing supervised, self-supervised, and foundation model-based strategies, this dissertation offers a cohesive framework that addresses critical hurdles including annotation burden, domain generalization, and model adaptability, paving the way for more efficient, scalable, and broadly accessible biomedical segmentation solutions.
   
 
-  % Biomedical image segmentation is crucial for accurate diagnostics, treatment planning, and biological research. However, biomedical images pose unique challenges due to their diverse modalities, complex biological structures, and the scarcity or high cost associated with creating large annotated datasets. Although convolutional neural networks (CNNs) achieve state-of-the-art accuracy, their effectiveness is often limited by poor generalizability, as they usually require extensive labeled data and domain-specific adaptations. Self-supervised and unsupervised methods offer valuable alternatives in scenarios where annotated data is unavailable or when domain-specific knowledge and cues can be leveraged to guide segmentation. These methods are particularly beneficial in biomedical contexts, as they utilize unlabeled or weakly labeled data to bypass the dependence on extensive annotations. Nonetheless, these approaches frequently encounter challenges related to segmentation accuracy, robustness, and domain-specific variability, limiting their effectiveness in broader clinical and research applications. Recently, foundation models, specifically the Segment Anything Model (SAM), have shown promise in overcoming many of these limitations. Trained on large and diverse datasets, SAM's capability for generalized segmentation via zero-shot learning suggests potential applicability across various biomedical imaging modalities and domains. However, SAM requires fine-tuning and adaptation to achieve reliable performance within the specialized domain of biomedical images. This dissertation addresses critical gaps across these segmentation paradigms. Chapter 1 introduces a supervised segmentation pipeline designed explicitly for comprehensive 3D cell instance segmentation, tracking, and motility classification of \textit{Toxoplasma gondii}, emphasizing accuracy, robustness, and usability. Chapter \ref{ch:toxo} and Chapter \ref{ch:cilia} explore self-supervised and minimally supervised segmentation methods: Chapter \ref{ch:toxo} proposes a self-supervised approach leveraging motion-derived pseudo-labels for efficient cilia segmentation without manual annotations, while Chapter \ref{ch:contrastive} investigates minimally supervised contrastive learning to enhance generalization and accuracy across biomedical imaging modalities. Lastly, Chapter \ref{ch:foundation} examines the adaptation of SAM to biomedical segmentation tasks, demonstrating techniques to fine-tune foundation models, enabling their effective use in biomedical domains.
+    % Biomedical image segmentation is crucial for accurate diagnostics, treatment planning, and biological research. However, biomedical images pose unique challenges due to their diverse modalities, complex biological structures, and the scarcity or high cost associated with creating large annotated datasets. Although convolutional neural networks (CNNs) achieve state-of-the-art accuracy, their effectiveness is often limited by poor generalizability, as they usually require extensive labeled data and domain-specific adaptations. Self-supervised and unsupervised methods offer valuable alternatives in scenarios where annotated data is unavailable or when domain-specific knowledge and cues can be leveraged to guide segmentation. These methods are particularly beneficial in biomedical contexts, as they utilize unlabeled or weakly labeled data to bypass the dependence on extensive annotations. Nonetheless, these approaches frequently encounter challenges related to segmentation accuracy, robustness, and domain-specific variability, limiting their effectiveness in broader clinical and research applications. Recently, foundation models, specifically the Segment Anything Model (SAM), have shown promise in overcoming many of these limitations. Trained on large and diverse datasets, SAM's capability for generalized segmentation via zero-shot learning suggests potential applicability across various biomedical imaging modalities and domains. However, SAM requires fine-tuning and adaptation to achieve reliable performance within the specialized domain of biomedical images. This dissertation addresses critical gaps across these segmentation paradigms. Chapter \ref{ch:intro} introduces a supervised segmentation pipeline designed explicitly for comprehensive 3D cell instance segmentation, tracking, and motility classification of \textit{Toxoplasma gondii}, emphasizing accuracy, robustness, and usability. Chapter \ref{ch:toxo} and Chapter \ref{ch:cilia} explore self-supervised and minimally supervised segmentation methods: Chapter \ref{ch:toxo} proposes a self-supervised approach leveraging motion-derived pseudo-labels for efficient cilia segmentation without manual annotations, while Chapter \ref{ch:contrastive} investigates minimally supervised contrastive learning to enhance generalization and accuracy across biomedical imaging modalities. Lastly, Chapter \ref{ch:foundation} examines the adaptation of SAM to biomedical segmentation tasks, demonstrating techniques to fine-tune foundation models, enabling their effective use in biomedical domains.
 }%
 
 
 %--------------------------TITLE PAGE---------------------------%
 \input{metafiles/titlepage.tex}
 \newcommand{\degreesearned}{%
-  M.S., Iran University of Science and Technology (IUST), Iran, 2016 \\
-  % Enter only degrees already completed. Follow example above\\
-  % If degree was obtained outside of the US, the country \\
-  % of the school and date obtained will need to be provided.
+    M.S., Iran University of Science and Technology (IUST), Iran, 2016 \\
+    % Enter only degrees already completed. Follow example above\\
+    % If degree was obtained outside of the US, the country \\
+    % of the school and date obtained will need to be provided.
 }%
 
 \newcommand{\degreetype}{Dissertation}
 \newcommand{\degreetitle}{Doctor of Philosophy}
-\newcommand{\degreename}{in Computer Science}
+\newcommand{\degreename}{Computer Science}
 \newcommand{\degreeyear}{2025}
 \maketitlepage
 
@@ -76,29 +76,29 @@
 \thispagestyle{empty}
 \vspace*{18pt}
 \begin{center}
-  \textsc{\doctitle}\\[18pt]
-  by\\[18pt]
-  \textsc{\docauthor}
+    \textsc{\doctitle}\\[18pt]
+    by\\[18pt]
+    \textsc{\docauthor}
 \end{center}
 \vfill
 
 \begin{flushright}
-  \begin{tabular}{ll}
-    Major Professor: & Shannon Quinn    \\ [8pt]
-    Committee:       & Hamid R. Arabnia \\
-                     & Tianming Liu     \\
-                     & Kyle Johnsen     \\
-  \end{tabular}
+    \begin{tabular}{ll}
+        Major Professor: & Shannon Quinn    \\ [8pt]
+        Committee:       & Hamid R. Arabnia \\
+                         & Tianming Liu     \\
+                         & Kyle Johnsen     \\
+    \end{tabular}
 \end{flushright}
 
 \vspace*{3cm}
 
 \begin{flushleft}
-  Electronic Version Approved:\\[12pt]
-  Ron Walcott\\
-  Dean of the Graduate School\\
-  The University of Georgia\\
-  Month Year
+    Electronic Version Approved:\\[12pt]
+    Ron Walcott\\
+    Dean of the Graduate School\\
+    The University of Georgia\\
+    May 2025
 \end{flushleft}
 \vspace*{1.5cm}
 
@@ -113,13 +113,13 @@
 \tableofcontents
 
 \iffigures
-  \addcontentsline{toc}{chapter}{\listfigurename}
-  \listoffigures
+    \addcontentsline{toc}{chapter}{\listfigurename}
+    \listoffigures
 \fi
 
 \iftables
-  \addcontentsline{toc}{chapter}{\listtablename}
-  \listoftables
+    \addcontentsline{toc}{chapter}{\listtablename}
+    \listoftables
 \fi
 
 \clearpage

@@ -41,7 +41,7 @@ SAM \cite{kirillov2023segment} introduced a groundbreaking promptable segmentati
 
 % 2. Biomedical adaptations of SAM and what they focus on. \\
 
-The success of the Segment Anything Model (SAM) in general-domain image segmentation has inspired adaptations and methodological enhancements aimed at tailoring its capabilities specifically for biomedical applications, addressing unique challenges associated with medical image segmentation. MedSAM \cite{ma2024segment} and other models, like BioSAM-2 \cite{yan2024biomedical}, have demonstrated the necessity of domain-specific fine-tuning for achieving clinical-grade accuracy. BioSAM-2, particularly designed for biomedical segmentation, has optimized SAM-2 with medical domain-specific data and additional memory mechanisms for improved performance across diverse biomedical imaging modalities. Medical SAM Adapter (Med-SA) \cite{wu2023medical} introduced adaptation modules such as Space-Depth Transpose (SD-Trans) and Hyper-Prompting Adapter (HyP-Adpt), which enhance SAM's performance on medical images through minimal yet strategic parameter adjustments. These modules have shown significant improvements over traditional segmentation methods by efficiently incorporating medical domain knowledge.
+The success of the SAM in general-domain image segmentation has inspired adaptations and methodological enhancements aimed at tailoring its capabilities specifically for biomedical applications, addressing unique challenges associated with medical image segmentation. MedSAM \cite{ma2024segment} and other models, like BioSAM-2 \cite{yan2024biomedical}, have demonstrated the necessity of domain-specific fine-tuning for achieving clinical-grade accuracy. BioSAM-2, particularly designed for biomedical segmentation, has optimized SAM-2 with medical domain-specific data and additional memory mechanisms for improved performance across diverse biomedical imaging modalities. Medical SAM Adapter (Med-SA) \cite{wu2023medical} introduced adaptation modules such as Space-Depth Transpose (SD-Trans) and Hyper-Prompting Adapter (HyP-Adpt), which enhance SAM's performance on medical images through minimal yet strategic parameter adjustments. These modules have shown significant improvements over traditional segmentation methods by efficiently incorporating medical domain knowledge.
 
 In the realm of prompt learning and auto-prompting the Segment Any Cell (SAC) \cite{na2024segment} framework leveraged auto-prompting and fine-tuning methods, using Low-Rank Adaptation (LoRA) \cite{hu2022lora}, to automatically generate effective prompts for nuclei segmentation. This method reduced manual intervention and improved segmentation accuracy in microscopic imaging scenarios. SSPrompt \cite{huang2024learning} optimized SAM's spatial and semantic prompts directly within its embedding space, enhancing its generalization capabilities across complex segmentation tasks. The Segment and Caption Anything \cite{huang2024segment} model enriched SAM's semantic understanding capabilities by integrating a query-based feature mixer, improving semantic precision and enabling the model to provide meaningful regional captions, thus enhancing segmentation results through better semantic contextualization.
 
@@ -69,7 +69,7 @@ Our methodology builds upon the principles of MedCLIP-SAMv2, integrating the Bio
 \section{Methodology}
 % 1. my methodology involves fine-tuning BiomedCLIP on the dataset of cilia i have. the cilia dataset contains videos or nasal epithelial biopsy containing ciliary regions. these videos are annotated and the annotations show where the body of the cell is and where the ciliary region are. sometimes the ciliary region sticks out of the boundary of the cell which makes them easy to detect with eye and some other times they overlap the body of the cell or are out of focus which makes them very hard to detect even by human. anyway. I finetune the BiomedCLIP model using masked images of cell bodies and masked images of cilia along with their respective textual descriptions and then use the model to infer on unseen data. my aim is to find out which factors undermine the reproducibility of this process. those are: fine-tuning the model and for how long and how much, the text descriptions of the patches, whether using masked images or raw images, and - finally when the BiomedCLIP spits out a heatmap of its predictions - what's the best strategy in selecting positive/negative points or bounding boxes considering the output of the BiomedCLIP - that is going to be the input of SAM - to make sure we get accurate and reproducible results
 
-This chapter outlines a systematic approach developed to enhance segmentation accuracy and reproducibility in biomedical imaging, specifically targeting the segmentation of ciliary regions in nasal epithelial biopsy videos. Leveraging the BiomedCLIP vision-language model integrated with the Segment Anything Model (SAM), the methodology involves fine-tuning BiomedCLIP on a specialized dataset containing annotated videos of nasal epithelial biopsies. These annotations distinctly mark cell bodies and associated ciliary regions, which vary significantly in visibility—ranging from clearly delineated, easily identifiable structures to overlapping and out-of-focus regions challenging even to expert human annotators. The methodology rigorously explores how different fine-tuning parameters, textual prompts, and image pre-processing strategies (masked versus raw) influence BiomedCLIP's performance. Subsequently, the trained BiomedCLIP generates predictive heatmaps on previously unseen data, serving as a basis for strategically selecting spatial prompts for SAM segmentation. Finally, this research investigates various prompt selection strategies to determine optimal methods for ensuring consistent, accurate, and reproducible segmentation results.
+This chapter outlines a systematic approach developed to enhance segmentation accuracy and reproducibility in biomedical imaging, specifically targeting the segmentation of ciliary regions in nasal epithelial biopsy videos. Leveraging the BiomedCLIP vision-language model integrated with the SAM, the methodology involves fine-tuning BiomedCLIP on a specialized dataset containing annotated videos of nasal epithelial biopsies. These annotations distinctly mark cell bodies and associated ciliary regions, which vary significantly in visibility—ranging from clearly delineated, easily identifiable structures to overlapping and out-of-focus regions challenging even to expert human annotators. The methodology rigorously explores how different fine-tuning parameters, textual prompts, and image pre-processing strategies (masked versus raw) influence BiomedCLIP's performance. Subsequently, the trained BiomedCLIP generates predictive heatmaps on previously unseen data, serving as a basis for strategically selecting spatial prompts for SAM segmentation. Finally, this research investigates various prompt selection strategies to determine optimal methods for ensuring consistent, accurate, and reproducible segmentation results.
 
 
 
@@ -113,18 +113,19 @@ Figure \ref{fig:untuned} shows the off the shelf performance of BiomedCLIP over 
 
 To investigate the impact of different fine-tuning parameters on BiomedCLIP's performance for cilia segmentation, we systematically varied several key factors. These included adjusting the number of training epochs, comparing fine-tuning on raw images versus masked images (isolating cell bodies and ciliary structures), utilizing varying lengths of textual descriptions (short versus detailed versus randomized detailed annotations with the help of ChatGPT), and experimenting with different configurations of loss function parameters. The parameter variations are summarized in Table~\ref{tab:fine-tune-params}.
 
-\begin{table}[htbp]
-    \centering
+\begin{table}[ht]
     \caption{Fine-Tuning Parameter Variations}
+    \centering
     \label{tab:fine-tune-params}
-    \begin{tabular}{ll}
-        \toprule
-        \textbf{Parameter}       & \textbf{Variation Descriptions}                           \\ \midrule
-        Number of Epochs         & 2 epochs vs. 32 epochs                                    \\
-        Input Images             & Raw images vs. Masked images                              \\
-        Textual Descriptions     & Concise vs. Detailed Vs. Randomized detailed descriptions \\
-        Loss Function Parameters & Default settings vs. Adjusted weighting schemes           \\
-        \bottomrule
+    \begin{tabular}{|l|l|}
+        % \toprule
+        \hline
+        \textbf{Parameter}       & \textbf{Variation Descriptions}                           \\  \hline
+        Number of Epochs         & 2 epochs vs. 32 epochs                                    \\ \hline
+        Input Images             & Raw images vs. Masked images                              \\ \hline
+        Textual Descriptions     & Concise vs. Detailed Vs. Randomized detailed descriptions \\ \hline
+        Loss Function Parameters & Default settings vs. Adjusted weighting schemes           \\ \hline
+        % \bottomrule
     \end{tabular}
 \end{table}
 % (\texttt{BiomedCLIP-PubMedBERT\_256-vit\_base\_patch16\_224})
@@ -257,42 +258,42 @@ Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned no mask ep 32.png}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned no mask ep 32.png}
     \caption{Localization results after fine-tuning BiomedCLIP for 32 epochs on full images without masks, showing incorrect and overly specialized localization.}
     \label{fig:fine_tuned_no_mask_ep32}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned 1ep with mask short caption th 0.4.png}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned 1ep with mask short caption th 0.4.png}
     \caption{Improved ciliary region localization after fine-tuning BiomedCLIP for one epoch using masked images with short captions.}
     \label{fig:fine_tuned_mask_short_ep1}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned masks small train short desc ep5.png}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned masks small train short desc ep5.png}
     \caption{Effective and balanced localization achieved by fine-tuning BiomedCLIP with a reduced dataset size (small train) using masked images and short captions for 5 epochs.}
     \label{fig:fine_tuned_mask_small_short_ep5}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/train with long captions.png}
+    \includegraphics[width=\textwidth]{figures/sam/train with long captions.png}
     \caption{Localization results demonstrating increased flexibility but higher false positives when fine-tuning BiomedCLIP using long captions.}
     \label{fig:train_long_captions}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned with mask th 0.4.png}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned with mask th 0.4.png}
     \caption{Localization impact of higher temperature (\(\tau = 0.4\)) during fine-tuning, resulting in blurred similarity distributions and compromised accuracy.}
     \label{fig:fine_tuned_with_mask_th_0_4}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/sam/fine-tuned masks long captions small train 01 09 095 005.png}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned masks long captions small train 01 09 095 005.png}
     \caption{Impact of increased hardness parameters (\(\beta_1=0.65\), \(\beta_2=0.65\)) during fine-tuning, showing improved localization diversity but higher false-positive rates.}
     \label{fig:fine_tuned_masks_small_train_01_09_095_005}
 \end{figure}
@@ -323,7 +324,7 @@ In summary, these experiments highlight the necessity of strategic fine-tuning a
 
 \section{Conclusion and Final Remarks}
 
-This chapter explored the potential of foundation models, particularly the Segment Anything Model (SAM), for biomedical image segmentation tasks. It highlighted the limitations inherent in supervised and unsupervised segmentation methods, particularly their dependence on extensive labeled datasets and poor transferability, respectively. Foundation models, specifically SAM, offer promising solutions through their remarkable zero-shot segmentation capabilities enabled by minimal user-defined prompts such as points or bounding boxes.
+This chapter explored the potential of foundation models, particularly the SAM, for biomedical image segmentation tasks. It highlighted the limitations inherent in supervised and unsupervised segmentation methods, particularly their dependence on extensive labeled datasets and poor transferability, respectively. Foundation models, specifically SAM, offer promising solutions through their remarkable zero-shot segmentation capabilities enabled by minimal user-defined prompts such as points or bounding boxes.
 
 Our investigations demonstrated that minimal fine-tuning of a vision-foundation model significantly improves the stability and accuracy of saliency maps. These refined saliency maps serve as effective foundations for generating precise points or bounding boxes that serve as inputs for SAM. The experiments clearly underscored the criticality of the prompt selection method, showing that the strategy employed by MedclipSAMv2, which selects random points from only the largest contour in a thresholded saliency map, is not universally optimal. In cases where regions of interest (ROIs) are sparse and widely distributed, selecting multiple contours rather than focusing exclusively on the largest one can yield better segmentation performance. Furthermore, our results indicated that the accuracy and robustness of the underlying vision-foundation model, such as BiomedCLIP, heavily influence the optimality of selecting single or multiple contours.
 
