@@ -53,7 +53,7 @@ Taking advantage of this temporal regularity in ciliary motion, we use OF to cap
 
 
 
-Figure ~\ref{fig:sampleVidWithMask} shows a sample of the OF component at a random time. From OF vectors, elemental components such as rotation are derived, which highlights the ciliary motion by capturing twisting and turning movements. To model the temporal evolution of these motion vectors, we employ an autoregressive (AR) model \cite{doi:10.5244/C.21.76}. This model captures the dynamics of the flow vectors over time, allowing us to understand how the motion evolves frame by frame. The AR model helps in decomposing the motion into a low-dimensional subspace, which simplifies the complex ciliary motion into more manageable analyses.
+Figure ~\ref{fig:sampleVidWithMask} shows a sample of the OF component at a random time. From OF vectors, elemental components such as rotation are derived, which highlights the ciliary motion by capturing twisting and turning movements. To model the temporal evolution of these motion vectors, we employ an autoregressive (AR) model \cite{hyndman2007higher}. This model captures the dynamics of the flow vectors over time, allowing us to understand how the motion evolves frame by frame. The AR model helps in decomposing the motion into a low-dimensional subspace, which simplifies the complex ciliary motion into more manageable analyses.
 
 
 \begin{equation}
@@ -160,8 +160,33 @@ These results show the potential of our approach to reduce the reliance on manua
 
 
 \section{Conclusions and Final Remarks}
-In this study, we introduced a self-supervised framework for cilia segmentation that eliminates the need for expert-labeled ground truth segmentation masks. Our approach takes advantage of the inherent visual similarities between healthy and unhealthy cilia to generate pseudolabels from optical flow-based motion segmentation of motile cilia. These pseudolabels are then used as ground truth for training a semi-supervised neural network capable of identifying regions containing dyskinetic cilia. Our results indicate that the self-supervised framework is a promising step towards automated cilia analysis. The model's ability to generalize from motile to dyskinetic cilia demonstrates its potential applicability in clinical settings. Although there are areas for improvement, such as enhancing segmentation accuracy and expanding the dataset, the framework sets the foundation for more efficient and reliable cilia analysis pipelines.
+% In this study, we introduced a self-supervised framework for cilia segmentation that eliminates the need for expert-labeled ground truth segmentation masks. Our approach takes advantage of the inherent visual similarities between healthy and unhealthy cilia to generate pseudolabels from optical flow-based motion segmentation of motile cilia. These pseudolabels are then used as ground truth for training a semi-supervised neural network capable of identifying regions containing dyskinetic cilia. Our results indicate that the self-supervised framework is a promising step towards automated cilia analysis. The model's ability to generalize from motile to dyskinetic cilia demonstrates its potential applicability in clinical settings. Although there are areas for improvement, such as enhancing segmentation accuracy and expanding the dataset, the framework sets the foundation for more efficient and reliable cilia analysis pipelines.
 
+
+In this chapter, we introduced a self-supervised framework for cilia segmentation that obviates the need for expert-labeled ground truth masks. By leveraging the rhythmic motion signatures of motile cilia, we generated pseudolabels from optical flow (OF) properties and an autoregressive model of the flow vectors. These pseudolabels were then used to train a semi-supervised neural network on motile cilia, enabling the model to generalize to dyskinetic cilia without requiring additional annotations.
+
+\paragraph{Key Contributions.}
+A central contribution of this work lies in showing that motile and dyskinetic cilia, despite significantly different motion patterns, share enough visual similarity in static frames to be captured under a single segmentation category. Our motion-based pseudolabel creation removes a major bottleneck in cilia analysis namely, the laborious process of manually annotating ciliary structures in high-speed videos. By emphasizing a two-stage pipeline (unsupervised pseudolabel generation followed by semi-supervised training), we have reduced reliance on large labeled datasets and demonstrated a pathway for robust segmentation of both healthy and diseased cilia.
+
+\paragraph{Discussion of Performance.}
+Quantitative evaluations on dyskinetic cilia samples which the model never saw during training revealed moderate segmentation performance (IoU of 0.230 and Dice score of 0.374). While these results are lower than on the validation set (which contained only motile cilia), they underscore the model’s capacity to transfer knowledge from one domain to another. Visual inspection of predictions suggests that refining the pseudolabel creation process could further reduce false positives and improve segmentation boundaries, especially for dyskinetic cilia with complex or minimal motion signatures.
+
+\paragraph{Limitations.}
+Despite the progress achieved, several limitations persist. First, the OF-based pseudolabels can be imperfect whenever extraneous motion (e.g., camera shake) mimics ciliary motion or when cilia exhibit barely detectable movement. Additionally, the AR modeling approach, although effective for regular rhythmic patterns, might struggle with extremely irregular or sporadic ciliary motion in advanced ciliopathies. Finally, our training dataset was comparatively small, which may limit model generalizability to more diverse clinical scenarios or imaging conditions.
+
+\paragraph{Future Directions.}
+Moving forward, the framework could be refined in multiple ways:
+\begin{itemize}
+    \item \textbf{Improved Pseudolabels:} Incorporating additional video processing techniques (e.g., temporal filtering or background subtraction) could yield higher-quality pseudolabels, thus reducing noise and boosting performance on dyskinetic cilia.
+    \item \textbf{Data Augmentation and Expansion:} Given the variability in ciliary motion across different tissue types and disease states, assembling a larger and more diverse dataset including videos from multiple clinical centers would likely enhance the model’s robustness.
+    \item \textbf{Advanced Architectures:} Exploring more sophisticated neural network architectures (e.g., transformers or advanced spatio-temporal models) might better capture the nuanced motion of dyskinetic cilia.
+    \item \textbf{Clinical Integration:} Integrating the pipeline with downstream analysis tools for instance, automated frequency or beat-pattern quantification could streamline clinical workflows and facilitate early detection of ciliopathies.
+\end{itemize}
+
+\paragraph{Broader Implications.}
+Beyond cilia analysis, this chapter illustrates how self-supervision can address similar bottlenecks in biomedical image analysis, where labeled data are scarce. By turning domain-specific cues (i.e., ciliary motion) into an automated labeling mechanism, we move closer to high-throughput analysis pipelines that can adapt to various imaging contexts. As the subsequent chapters will explore complementary approaches to segmentation and classification tasks, the concepts introduced here especially the coupling of domain knowledge with unsupervised strategies offer a blueprint for tackling the annotation scarcity that frequently hinders medical image processing.
+
+In sum, the work presented in this chapter establishes a promising avenue for more efficient and accurate cilia segmentation. Our self-supervised approach demonstrates that motion and visual cues, when harnessed effectively, can reduce the need for manual annotation and bolster the performance of segmentation models in both research and clinical settings. While challenges remain, particularly in handling more complex dyskinetic patterns, the framework set forth here provides a foundation upon which future studies can refine and expand, ultimately advancing the automated analysis of ciliopathies and related conditions.
 
 
 
