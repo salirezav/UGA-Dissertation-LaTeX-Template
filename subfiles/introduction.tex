@@ -47,22 +47,7 @@ The central objective of this dissertation is to systematically address existing
 
 % \textcolor{BulldogRed}{
 
-The dissertation is organized to comprehensively address these research questions through a structured approach, encompassing supervised, self-supervised, and foundation-model-driven segmentation techniques. The chapters are organized as follows:
 
-\begin{itemize}
-
-    \item \textbf{Chapter \ref{ch:toxo}} introduces TSeg, a novel supervised segmentation pipeline explicitly designed for 3D cell instance segmentation, tracking, and motility classification, particularly optimized for noisy microscopy data such as those of \textit{Toxoplasma Gondii}. This chapter directly addresses challenges of robust supervised segmentation and practical usability, showcasing TSeg's effectiveness and generalizability to diverse cell types through user-friendly interfaces and optimized workflows.
-    \item \textbf{Chapter \ref{ch:toxo}} introduces TSeg, a novel supervised segmentation pipeline explicitly designed for 3D cell instance segmentation, tracking, and motility classification, particularly optimized for noisy microscopy data such as those of \textit{Toxoplasma Gondii}. This chapter directly addresses challenges of robust supervised segmentation and practical usability, showcasing TSeg's effectiveness and generalizability to diverse cell types through user-friendly interfaces and optimized workflows.
-
-    \item \textbf{Chapter \ref{ch:cilia}} explores self-supervised segmentation methods, proposing an innovative pseudo-labeling strategy to significantly reduce annotation dependency. Utilizing motion-derived masks to generate pseudo-labels, this method addresses the scarcity of annotated datasets, particularly demonstrated in challenging cilia segmentation tasks where annotation efforts are costly and complex.
-
-    \item \textbf{Chapter \ref{ch:contrastive}} investigates minimally supervised segmentation approaches leveraging contrastive learning frameworks. By training on minimal labeled data, this chapter critically assesses and demonstrates the capability of contrastive learning to improve generalization and robustness across diverse biomedical imaging modalities, explicitly addressing the challenges of data scarcity and limited generalizability.
-
-    \item \textbf{Chapter \ref{ch:foundation}} focuses on adapting and validating universal segmentation frameworks, specifically examining the Segment Anything Model (SAM) and its applicability to biomedical contexts. Through prompt engineering and strategic fine-tuning, this chapter systematically addresses domain-specific adaptation challenges and evaluates the robustness, effectiveness, and reproducibility of SAM-based segmentation across varied biomedical imaging tasks.
-
-    \item Finally, \textbf{Chapter \ref{ch:conclusion}} synthesizes the methodological advancements described in previous chapters, critically discusses their broader implications for biomedical imaging research and clinical applications, identifies persistent gaps, and proposes promising directions for future research in biomedical image segmentation.
-
-\end{itemize}
 
 % Chapter \ref{ch:toxo} rigorously evaluates supervised deep learning segmentation methods, emphasizing performance optimization, generalization improvement, and methodological enhancements across diverse biomedical imaging datasets. Chapter \ref{ch:contrastive} explores unsupervised and self-supervised segmentation approaches, explicitly focusing on methods that reduce reliance on annotated data, critically evaluating their effectiveness and generalizability. Chapter \ref{ch:foundation} focuses on adapting and validating universal segmentation frameworks such as SAM, investigating their applicability, robustness, and performance across various biomedical modalities and segmentation targets. Finally, Chapter 5 synthesizes these findings, discusses implications, and suggests directions for future biomedical segmentation research.
 
@@ -161,17 +146,32 @@ Developing intuitive graphical user interfaces (GUIs) and interactive tools subs
 % Chapters 2 and 4 operationalize usability through tools like TSeg's Napari plugin for no-code 3D segmentation and an interactive GUI for thresholding contrastive saliency maps, enabling biologists to deploy advanced segmentation without computational expertise.
 % }
 
+The dissertation is organized to comprehensively address these research questions through a structured approach, encompassing supervised, self-supervised, and foundation-model-driven segmentation techniques. The chapters are organized as follows:
 
-This dissertation addresses the outlined challenges explicitly:
 \begin{itemize}
-    \item \textbf{Chapter \ref{ch:toxo}} (Supervised Methods) addresses annotation-intensive supervised segmentation, enhancing usability and generalization through the TSeg pipeline.
 
-    \item \textbf{Chapter \ref{ch:cilia}} (Self-supervised Methods) introduces optical flow-driven pseudo-labeling to alleviate data scarcity.
+    \item \textbf{Chapter \ref{ch:toxo}} introduces TSeg, a novel supervised segmentation pipeline explicitly designed for 3D cell instance segmentation, tracking, and motility classification, particularly optimized for noisy microscopy data such as those of \textit{Toxoplasma Gondii}. This chapter directly addresses challenges of robust supervised segmentation and practical usability, showcasing TSeg's effectiveness and generalizability to diverse cell types through user-friendly interfaces and optimized workflows.
 
-    \item \textbf{Chapter \ref{ch:contrastive}} (Minimally supervised) uses contrastive learning to mitigate annotation requirements, optimizing segmentation under limited supervision.
+    \item \textbf{Chapter \ref{ch:cilia}} explores self-supervised segmentation methods, proposing an innovative pseudo-labeling strategy to significantly reduce annotation dependency. Utilizing motion-derived masks to generate pseudo-labels, this method addresses the scarcity of annotated datasets, particularly demonstrated in challenging cilia segmentation tasks where annotation efforts are costly and complex.
 
-    \item \textbf{Chapter \ref{ch:foundation}} (Foundation Models) evaluates the adaptation of universal SAM to diverse biomedical imaging, directly tackling the generalization and transferability challenges.
+    \item \textbf{Chapter \ref{ch:contrastive}} investigates minimally supervised segmentation approaches leveraging contrastive learning frameworks. By training on minimal labeled data, this chapter assesses and demonstrates the capability of contrastive learning to improve generalization and robustness across diverse biomedical imaging modalities, explicitly addressing the challenges of data scarcity and limited generalizability.
+
+    \item \textbf{Chapter \ref{ch:foundation}} focuses on adapting and validating universal segmentation frameworks, specifically examining the Segment Anything Model (SAM) and its applicability to biomedical contexts. Through prompt engineering and strategic fine-tuning, this chapter systematically addresses domain-specific adaptation challenges and evaluates the robustness, effectiveness, and reproducibility of SAM-based segmentation across varied biomedical imaging tasks.
+
+    \item Finally, \textbf{Chapter \ref{ch:conclusion}} summarizes the methodological advancements described in previous chapters, discusses their broader implications for biomedical imaging research and clinical applications, identifies persistent gaps, and proposes promising directions for future research in biomedical image segmentation.
+
 \end{itemize}
+
+% This dissertation addresses the outlined challenges explicitly:
+% \begin{itemize}
+%     \item \textbf{Chapter \ref{ch:toxo}} (Supervised Methods) addresses annotation-intensive supervised segmentation, enhancing usability and generalization through the TSeg pipeline.
+
+%     \item \textbf{Chapter \ref{ch:cilia}} (Self-supervised Methods) introduces optical flow-driven pseudo-labeling to alleviate data scarcity.
+
+%     \item \textbf{Chapter \ref{ch:contrastive}} (Minimally supervised) uses contrastive learning to mitigate annotation requirements, optimizing segmentation under limited supervision.
+
+%     \item \textbf{Chapter \ref{ch:foundation}} (Foundation Models) evaluates the adaptation of universal SAM to diverse biomedical imaging, directly tackling the generalization and transferability challenges.
+% \end{itemize}
 
 % \textcolor{Hedges}{Get rid of these three sentences please!} Deep learning models are effective across various applications but their usability depends on several factors such as the complexity of the task at hand, data availability, and the extent of necessary model customization. Incorporating an intuitive graphical user interface (GUI) and ensuring interactivity can enhance the usability of these tools, making them more accessible to non-expert users, such as biologists, who need practical, ready-to-use solutions without the intricacies of model adjustments. For users who prefer straightforward applications, ease of use is crucial. They benefit from methods that do not require extensive modifications or tuning to achieve optimal results.
 

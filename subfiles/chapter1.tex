@@ -126,10 +126,16 @@ To classify the motility pattern of \textit{\textit{T. gondii}} in 3D space in a
     \label{fig:clustering}
 \end{figure}
 
+% Required packages in your preamble:
+% \usepackage{graphicx} % To include images
+% \usepackage{booktabs} % Optional: for better horizontal rules
+
 
 
 \section{Evaluation}
-TSeg's performance in segmentation was evaluated over datasets introduced in \cite{mavska2023cell}. The Cell Tracking Challenge (CTC) offers a diverse array of 2D and 3D time-lapse microscopy datasets, each capturing unique biological specimens under various imaging modalities. Table \ref{tbl:ctc_datasets} contains is an overview of these datasets, detailing the organisms studied, imaging techniques employed, and acquisition specifics. CellPose has 26 and PlantSeg has 17 different pretrained models that can perform segmentation over 2D and 3D biomedical data. 10 samples from the 2D datasets, and one from the 3D datasets were randomly selected and processed with each of the 43 models using the API provided by PlantSeg and CellPose. Each dataset contains sequences of time-lapse video frames, therefore sample of a 2D dataset is comprised of a single 2D grayscale image, and each sample from the 3D datasets has a stack of 2D images recorded simultaneously across the z-axis to comprise one frame. The prediced masks of the models were evaluated against the provided ground-truth data using the Jaccard Index (JI) score and averaged across all samples of the same dataset. Tables~\ref{tbl:cellpose_2d_segmentation} and~\ref{tbl:plantseg_2d_segmentation} present the performance metrics for CellPose and PlantSeg on various 2D datasets. Tables~\ref{tbl:cellpose_3d_segmentation} and~\ref{tbl:plantseg_3d_segmentation} summarize their performance on the 3D datasets.
+TSeg's performance in segmentation was evaluated over datasets introduced in \cite{mavska2023cell}. The Cell Tracking Challenge (CTC) offers a diverse array of 2D and 3D time-lapse microscopy datasets, each capturing unique biological specimens under various imaging modalities. Table \ref{tbl:ctc_datasets} contains is an overview of these datasets, detailing the organisms studied, imaging techniques employed, and acquisition specifics. Table \ref{tab:ctc_datasets_visual_summary} shows a sample image of each dataset. CellPose has 26 and PlantSeg has 17 different pre-trained models that can perform segmentation over 2D and 3D biomedical data. 10 samples from the 2D datasets, and one from the 3D datasets were randomly selected and processed with each of the 43 models using the API provided by PlantSeg and CellPose. Each dataset contains sequences of time-lapse video frames, therefore sample of a 2D dataset is comprised of a single 2D grayscale image, and each sample from the 3D datasets has a stack of 2D images recorded simultaneously across the z-axis to comprise one frame. The predicted masks of the models were evaluated against the provided ground-truth data using the Jaccard Index (JI) score and averaged across all samples of the same dataset. The results of the best performing models of CellPose and PlantSeg are shown in Table \ref{tbl:best_2d_segmentation_summary} and Table \ref{tbl:best_3d_segmentation_summary} over 2D and 3D datasets respectively.
+
+The JI scores of all models are available in the appendix. Tables~\ref{tbl:cellpose_2d_segmentation} and~\ref{tbl:plantseg_2d_segmentation} present the performance metrics for all CellPose and PlantSeg models on the 2D datasets. Tables~\ref{tbl:cellpose_3d_segmentation} and~\ref{tbl:plantseg_3d_segmentation} summarize their performance on the 3D datasets.
 
 % {tbl:3d_segmentation_results}
 \begin{table}[!ht]
@@ -138,7 +144,7 @@ TSeg's performance in segmentation was evaluated over datasets introduced in \ci
     \label{tbl:ctc_datasets}
     \renewcommand{\arraystretch}{1.3} % Adjust row spacing
     \small % Reduce font size
-    \begin{tabular}{|l|p{2cm}|p{5cm}|p{2cm}|p{2cm}|}
+    \begin{tabular}{|l|p{2.3cm}|p{5cm}|p{2.3cm}|p{2.3cm}|}
         \hline
         \textbf{Dataset Name} & \textbf{Organism}       & \textbf{Description}                                                                                                        & \textbf{Imaging Modality}                           & \textbf{Dimension} \\ \hline
         BF-C2DL-HSC           & Mouse                   & Hematopoietic stem cells cultured in hydrogel microwells.                                                                   & Brightfield Microscopy                              & 2D                 \\ \hline
@@ -159,163 +165,87 @@ TSeg's performance in segmentation was evaluated over datasets introduced in \ci
     \end{tabular}
 \end{table}
 
-\begin{table}[!ht]
-    \centering
-    \caption{CellPose Performance on 2D Datasets}
-    \label{tbl:cellpose_2d_segmentation}
-    \renewcommand{\arraystretch}{1.2}
-    \small
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
-        \hline
-        % \toprule
-        \textbf{dataset name}     & \rotatebox{90}{\textbf{BF-C2DL-HSC}} & \rotatebox{90}{\textbf{BF-C2DL-MuSC}} & \rotatebox{90}{\textbf{DIC-C2DH-HeLa}} & \rotatebox{90}{\textbf{Fluo-C2DL-Huh7}} & \rotatebox{90}{\textbf{Fluo-C2DL-MSC}} & \rotatebox{90}{\textbf{Fluo-N2DH-GOWT1}} & \rotatebox{90}{\textbf{Fluo-N2DH-SIM+}} & \rotatebox{90}{\textbf{Fluo-N2DL-HeLa}} & \rotatebox{90}{\textbf{PhC-C2DH-U373}} & \rotatebox{90}{\textbf{PhC-C2DL-PSC}} \\ \hline
-        % \midrule \hline
-        cyto3                     & 0.98                                 & 0.95                                  & 0.36                                   & 0.60                                    & 0.90                                   & 0.89                                     & 0.82                                    & 0.75                                    & 0.87                                   & 0.87                                  \\ \hline
-        nuclei                    & 0.99                                 & 0.99                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.90                                  \\ \hline
-        cyto2\_cp3                & 0.94                                 & 0.95                                  & 0.35                                   & 0.60                                    & 0.89                                   & 0.87                                     & 0.82                                    & 0.74                                    & 0.85                                   & 0.87                                  \\ \hline
-        tissuenet\_cp3            & 0.98                                 & 0.97                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        livecell\_cp3             & 0.98                                 & 0.99                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        yeast\_PhC\_cp3           & 0.98                                 & 0.98                                  & 0.34                                   & 0.59                                    & 0.84                                   & 0.86                                     & 0.71                                    & 0.75                                    & 0.86                                   & 0.88                                  \\ \hline
-        yeast\_BF\_cp3            & 0.99                                 & 0.99                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.79                                    & 0.73                                    & 0.87                                   & 0.91                                  \\ \hline
-        bact\_phase\_cp3          & 0.97                                 & 0.97                                  & 0.35                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.79                                    & 0.73                                    & 0.86                                   & 0.89                                  \\ \hline
-        bact\_fluor\_cp3          & 0.93                                 & 0.95                                  & 0.33                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.79                                    & 0.73                                    & 0.84                                   & 0.89                                  \\ \hline
-        deepbacs\_cp3             & 0.99                                 & 0.99                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.90                                  \\ \hline
-        cyto2                     & 0.95                                 & 0.96                                  & 0.36                                   & 0.60                                    & 0.90                                   & 0.88                                     & 0.82                                    & 0.73                                    & 0.86                                   & 0.86                                  \\ \hline
-        cyto                      & 0.97                                 & 0.97                                  & 0.35                                   & 0.59                                    & 0.89                                   & 0.87                                     & 0.80                                    & 0.72                                    & 0.84                                   & 0.86                                  \\ \hline
-        CPx                       & 0.97                                 & 0.98                                  & 0.34                                   & 0.59                                    & 0.89                                   & 0.88                                     & 0.80                                    & 0.73                                    & 0.86                                   & 0.90                                  \\ \hline
-        neurips\_grayscale\_cyto2 & 0.99                                 & 0.98                                  & 0.35                                   & 0.60                                    & 0.89                                   & 0.88                                     & 0.89                                    & 0.67                                    & 0.87                                   & 0.91                                  \\ \hline
-        CP                        & 0.97                                 & 0.95                                  & 0.35                                   & 0.60                                    & 0.89                                   & 0.88                                     & 0.81                                    & 0.72                                    & 0.86                                   & 0.89                                  \\ \hline
-        TN1                       & 0.98                                 & 0.99                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.86                                   & 0.91                                  \\ \hline
-        TN2                       & 0.99                                 & 0.98                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        TN3                       & 0.99                                 & 0.99                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        LC1                       & 0.99                                 & 0.99                                  & 0.27                                   & 0.59                                    & 0.89                                   & 0.89                                     & 0.79                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        LC2                       & 0.96                                 & 0.97                                  & 0.36                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.79                                    & 0.75                                    & 0.85                                   & 0.90                                  \\ \hline
-        LC3                       & 0.98                                 & 0.97                                  & 0.33                                   & 0.60                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.74                                    & 0.82                                   & 0.85                                  \\ \hline
-        LC4                       & 0.95                                 & 0.98                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.83                                  \\ \hline
-        % \bottomrule
-    \end{tabular}
-\end{table}
+
 CellPose demonstrated consistently strong performance across the majority of the evaluated 2D datasets, achieving accuracy levels often exceeding 0.90. Datasets like \textit{BF-C2DL-HSC}, \textit{BF-C2DL-MuSC}, and \textit{PhC-C2DL-PSC} showed particularly high segmentation accuracy, consistently surpassing 0.95. Notably, CellPose also maintained robust accuracy on diverse cell types and imaging modalities, indicating its effective generalization across different contexts.
 
 PlantSeg, evaluated primarily on plant-based imaging datasets, showed impressive robustness and consistently high accuracy, especially for structured cellular patterns. On both 2D and 3D datasets, PlantSeg achieved similar high-performance metrics to CellPose, often with accuracy scores around 0.96 or higher.
 
 
-% Second Table (PlantSeg Performance)
+
 \begin{table}[!ht]
     \centering
-    \caption{PlantSeg Performance on 2D Datasets}
-    \label{tbl:plantseg_2d_segmentation}
-    \renewcommand{\arraystretch}{1.2}
-    \small
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+    \caption{Best Segmentation Performance on 2D CTC Datasets (Jaccard Index)}
+    \label{tbl:best_2d_segmentation_summary}
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing if needed
+    \small % Reduce font size if needed
+    \begin{tabular}{|l|l|c|l|c|}
         \hline
-        % \toprule
-        \textbf{dataset name}                    & \rotatebox{90}{\textbf{BF-C2DL-HSC}} & \rotatebox{90}{\textbf{BF-C2DL-MuSC}} & \rotatebox{90}{\textbf{DIC-C2DH-HeLa}} & \rotatebox{90}{\textbf{Fluo-C2DL-Huh7}} & \rotatebox{90}{\textbf{Fluo-C2DL-MSC}} & \rotatebox{90}{\textbf{Fluo-N2DH-GOWT1}} & \rotatebox{90}{\textbf{Fluo-N2DH-SIM+}} & \rotatebox{90}{\textbf{Fluo-N2DL-HeLa}} & \rotatebox{90}{\textbf{PhC-C2DH-U373}} & \rotatebox{90}{\textbf{PhC-C2DL-PSC}} \\ \hline
-        % \midrule
-        confocal\_2D\_unet\_ovules\_ds2x         & 0.99                                 & 0.99                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        lightsheet\_2D\_unet\_root\_ds1x         & 0.99                                 & 0.99                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        lightsheet\_2D\_unet\_root\_nuclei\_ds1x & 0.99                                 & 0.99                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        confocal\_2D\_unet\_sa\_meristem\_cells  & 0.99                                 & 0.99                                  & 0.36                                   & 0.59                                    & 0.89                                   & 0.86                                     & 0.80                                    & 0.75                                    & 0.87                                   & 0.91                                  \\ \hline
-        % \bottomrule
+        \textbf{Dataset Name} & \textbf{JI (Best CellPose Model)}                 & \textbf{JI (Best PlantSeg Model)}                  \\ \hline
+        BF-C2DL-HSC           & 0.99 (\texttt{nuclei / yeast\_BF\_cp3}\*        ) & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        BF-C2DL-MuSC          & 0.99 (\texttt{nuclei / livecell\_cp3}\*         ) & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        DIC-C2DH-HeLa         & 0.36 (\texttt{cyto3 / nuclei}\*                 ) & 0.36 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        Fluo-C2DL-Huh7        & 0.60 (\texttt{cyto3 / nuclei}\*                 ) & 0.59 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        Fluo-C2DL-MSC         & 0.90 (\texttt{cyto3 / cyto2}                    ) & 0.89 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        Fluo-N2DH-GOWT1       & 0.89 (\texttt{cyto3}                            ) & 0.86 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        Fluo-N2DH-SIM+        & 0.89 (\texttt{neurips\_grayscale\_cyto2}        ) & 0.80 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        Fluo-N2DL-HeLa        & 0.75 (\texttt{cyto3 / nuclei}\*                 ) & 0.75 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        PhC-C2DH-U373         & 0.87 (\texttt{cyto3 / nuclei}\*                 ) & 0.87 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
+        PhC-C2DL-PSC          & 0.91 (\texttt{tissuenet\_cp3 / livecell\_cp3}\* ) & 0.91 (\texttt{confocal\_2D\_unet\_ovules\_ds2x}\*) \\ \hline
     \end{tabular}
+    % \caption*{\footnotesize \*Indicates multiple models achieved the same best score; one or two representatives are listed.}
 \end{table}
 
-% First Table (CellPose Performance on 3D datasets)
-\begin{table}[!ht]
-    \centering
-    \caption{CellPose Performance on 3D Datasets}
-    \label{tbl:cellpose_3d_segmentation}
-    \small
-    \begin{tabular}{|l|c|c|c|c|c|c|}
-        % \toprule
-        \hline
-        \textbf{dataset\_name}    & \rotatebox{90}{\textbf{Fluo-C3DH-A549}} & \rotatebox{90}{\textbf{Fluo-C3DH-A549-SIM}} & \rotatebox{90}{\textbf{Fluo-C3DH-H157}} & \rotatebox{90}{\textbf{Fluo-N3DH-CE}} & \rotatebox{90}{\textbf{Fluo-N3DH-CHO}} & \rotatebox{90}{\textbf{Fluo-N3DH-SIM+}} \\ \hline
-        % \midrule \hline
-        cyto3                     & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.83                                   & 0.92                                    \\ \hline
-        nuclei                    & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        cyto2\_cp3                & 0.97                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.79                                   & 0.93                                    \\ \hline
-        tissuenet\_cp3            & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        livecell\_cp3             & 0.96                                    & 0.95                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        yeast\_PhC\_cp3           & 0.92                                    & 0.93                                        & 0.88                                    & 0.68                                  & 0.84                                   & 0.86                                    \\ \hline
-        yeast\_BF\_cp3            & 0.95                                    & 0.97                                        & 0.92                                    & 0.80                                  & 0.83                                   & 0.88                                    \\ \hline
-        bact\_phase\_cp3          & 0.96                                    & 0.97                                        & 0.93                                    & 0.79                                  & 0.83                                   & 0.93                                    \\ \hline
-        bact\_fluor\_cp3          & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.83                                   & 0.93                                    \\ \hline
-        deepbacs\_cp3             & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        cyto2                     & 0.96                                    & 0.98                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.94                                    \\ \hline
-        cyto                      & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.82                                   & 0.93                                    \\ \hline
-        CPx                       & 0.98                                    & 0.99                                        & 0.93                                    & 0.80                                  & 0.83                                   & 0.93                                    \\ \hline
-        neurips\_grayscale\_cyto2 & 0.97                                    & 0.98                                        & 0.93                                    & 0.73                                  & 0.82                                   & 0.92                                    \\ \hline
-        CP                        & 0.98                                    & 0.99                                        & 0.93                                    & 0.79                                  & 0.82                                   & 0.93                                    \\ \hline
-        TN1                       & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        TN2                       & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        TN3                       & 0.96                                    & 0.99                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        LC1                       & 0.86                                    & 0.97                                        & 0.92                                    & 0.80                                  & 0.82                                   & 0.92                                    \\ \hline
-        LC2                       & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        LC3                       & 0.96                                    & 0.13                                        & 0.93                                    & 0.79                                  & 0.82                                   & 0.30                                    \\ \hline
-        LC4                       & 0.96                                    & 0.97                                        & 0.93                                    & 0.80                                  & 0.84                                   & 0.93                                    \\ \hline
-        % \bottomrule
-    \end{tabular}
-\end{table}
 
 However, during evaluation on 3D datasets, PlantSeg encountered challenges due to computational constraints. Several large-sized samples could not be fully processed by specific CNN architectures, resulting in incomplete results (indicated by blank cells in Table~\ref{tbl:plantseg_3d_segmentation}). This limitation primarily arose in datasets such as \textit{Fluo-N3DH-CE} and \textit{Fluo-N3DH-SIM+}, where the sheer volume of the input data surpassed the available computational resources, highlighting the computational demands associated with sophisticated 3D segmentation tasks. Future enhancements of PlantSeg may involve optimizing CNN architectures or leveraging computational strategies, such as tiling or cloud processing, to address these scalability limitations.
 
-% Second Table (PlantSeg Performance on 3D datasets)
+
 \begin{table}[!ht]
     \centering
-    \caption{PlantSeg Performance on 3D Datasets}
-    \label{tbl:plantseg_3d_segmentation}
-    \small
-    \begin{tabular}{|l|c|c|c|c|c|c|}
+    \caption{Best Segmentation Performance on 3D CTC Datasets (Jaccard Index)}
+    \label{tbl:best_3d_segmentation_summary}
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing if needed
+    \small % Reduce font size if needed
+    \begin{tabular}{|l|l|c|l|c|}
         \hline
-        % \toprule
-        \textbf{dataset\_name}                    & \rotatebox{90}{\textbf{Fluo-C3DH-A549}} & \rotatebox{90}{\textbf{Fluo-C3DH-A549-SIM}} & \rotatebox{90}{\textbf{Fluo-C3DH-H157}} & \rotatebox{90}{\textbf{Fluo-N3DH-CE}} & \rotatebox{90}{\textbf{Fluo-N3DH-CHO}} & \rotatebox{90}{\textbf{Fluo-N3DH-SIM+}} \\ \hline
-        % \midrule \hline
-        generic\_confocal\_3D\_unet               & 0.96                                    & 0.97                                        & 0.88                                    & 0.78                                  & 0.84                                   & ---                                     \\ \hline
-        generic\_light\_sheet\_3D\_unet           & 0.96                                    & 0.97                                        & 0.88                                    & 0.78                                  & 0.84                                   & ---                                     \\ \hline
-        confocal\_3D\_unet\_ovules\_ds1x          & 0.96                                    & 0.97                                        & 0.88                                    & 0.78                                  & 0.84                                   & ---                                     \\ \hline
-        confocal\_3D\_unet\_ovules\_ds2x          & 0.96                                    & 0.97                                        & 0.88                                    & 0.78                                  & 0.84                                   & ---                                     \\ \hline
-        confocal\_3D\_unet\_ovules\_ds3x          & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        lightsheet\_3D\_unet\_root\_ds1x          & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        lightsheet\_3D\_unet\_root\_ds2x          & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        lightsheet\_3D\_unet\_root\_ds3x          & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        lightsheet\_3D\_unet\_root\_nuclei\_ds1x  & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        confocal\_3D\_unet\_sa\_meristem\_cells   & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        confocal\_3D\_unet\_mouse\_embryo\_nuclei & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        PlantSeg\_3Dnuc\_platinum                 & 0.96                                    & 0.97                                        & 0.88                                    & ---                                   & 0.84                                   & ---                                     \\ \hline
-        % \bottomrule
+        \textbf{Dataset Name} & \textbf{JI (Best CellPose Models)}        & \textbf{JI (Best PlantSeg Model)}                  \\ \hline
+        Fluo-C3DH-A549        & 0.98 (\texttt{CPx, CP})                   & 0.96 ( \texttt{generic\_confocal\_3D\_unet}\*    ) \\ \hline
+        Fluo-C3DH-A549-SIM    & 0.99 (\texttt{CPx, CP, TN3})              & 0.97 ( \texttt{generic\_confocal\_3D\_unet}\*    ) \\ \hline
+        Fluo-C3DH-H157        & 0.93 (\texttt{cyto3, nuclei, cyto2\_cp3}) & 0.88 ( \texttt{generic\_confocal\_3D\_unet}\*    ) \\ \hline
+        Fluo-N3DH-CE          & 0.80 (\texttt{cyto3, nuclei, cyto2\_cp3}) & 0.78 ( \texttt{generic\_confocal\_3D\_unet}\*\*  ) \\ \hline
+        Fluo-N3DH-CHO         & 0.84 (\texttt{nuclei, tissuenet\_cp3 })   & 0.84 ( \texttt{generic\_confocal\_3D\_unet}\*    ) \\ \hline
+        Fluo-N3DH-SIM+        & 0.94 (\texttt{cyto2})                     & ---  (   N/A (Processing failed)\*\*\*           ) \\ \hline
     \end{tabular}
+    % \caption*{\footnotesize \*Indicates multiple PlantSeg models achieved the same best score; one representative listed. (\dots) indicates many CellPose models achieved the best score; only representative examples listed. \*\*Best score among PlantSeg models that successfully processed the data; some models failed due to computational constraints. \*\*\*All tested PlantSeg models failed on this dataset due to computational constraints.}
 \end{table}
 
 
-
-Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively perform cell segmentation tasks across a range of datasets and conditions, with CellPose providing a slightly more versatile and robust generalization across various cell types and PlantSeg excelling particularly in structured datasets. Understanding these limitations and strengths will inform users' selection of the most appropriate tool based on their dataset characteristics and computational constraints. A comprehensive summary of segmentation performance metrics highlighting key comparative results between CellPose and PlantSeg on selected 2D and 3D datasets is presented in Table~\ref{tbl:master_summary_segmentation}. This table succinctly captures essential findings, facilitating quick comparisons and reinforcing the suitability of TSeg's modular design in addressing diverse biomedical segmentation challenges.
-
+Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively perform cell segmentation tasks across a range of datasets and conditions, with CellPose providing a slightly more versatile and robust generalization across various cell types and PlantSeg excelling particularly in structured datasets. Understanding these limitations and strengths will inform users' selection of the most appropriate tool based on their dataset characteristics and computational constraints. A comprehensive summary of segmentation performance metrics highlighting key comparative results between CellPose and PlantSeg on selected 2D and 3D datasets is presented in Tables~\ref{tbl:best_2d_segmentation_summary} and \ref{tbl:best_3d_segmentation_summary}. These tables succinctly capture essential findings, facilitating quick comparisons and reinforcing the suitability of TSeg's modular design in addressing diverse biomedical segmentation challenges. Furthermore, table \ref{tab:ctc_sota_top1_ji} provides the Jaccard Index of the top performing models from the Cell Tracking Challenge (CTC) 2023, showcasing the state-of-the-art performance of TSeg in comparison to other leading segmentation tools.
 
 
 
-% Master Table summarizing key segmentation results
-\begin{table}[!ht]
-    \centering
-    \caption{Comparative Summary of Segmentation Performance (Jaccard Index)}
-    \label{tbl:master_summary_segmentation}
-    \renewcommand{\arraystretch}{1.3}
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{|l|l|c|c|c|l|}
-            \hline
-            \textbf{Dataset Name} & \textbf{Imaging Modality} & \textbf{Dimension} & \textbf{Best CellPose Model (JI)} & \textbf{Best PlantSeg Model (JI)}                       & \textbf{Comments}                                                      \\ \hline
-            BF-C2DL-HSC           & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Excellent performance by both tools                                    \\ \hline
-            BF-C2DL-MuSC          & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Consistently high accuracy                                             \\ \hline
-            DIC-C2DH-HeLa         & DIC                       & 2D                 & 0.36 (\texttt{cyto3})             & 0.36 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Low accuracy due to imaging complexity                                 \\ \hline
-            Fluo-C2DL-MSC         & Fluorescence              & 2D                 & 0.90 (\texttt{cyto3})             & 0.89 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Good accuracy, slight advantage for CellPose                           \\ \hline
-            Fluo-N2DH-GOWT1       & Fluorescence              & 2D                 & 0.89 (\texttt{cyto3})             & 0.86 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Moderate accuracy, CellPose slightly better                            \\ \hline
-            Fluo-N2DL-HeLa        & Fluorescence              & 2D                 & 0.75 (\texttt{cyto3})             & 0.75 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Equal performance by both tools                                        \\ \hline
-            Fluo-C3DH-A549        & Fluorescence              & 3D                 & 0.98 (\texttt{CPx})               & 0.96 (\texttt{generic\_confocal\_3D\_unet})             & CellPose robust, strong performance by PlantSeg                        \\ \hline
-            Fluo-C3DH-H157        & Fluorescence              & 3D                 & 0.93 (\texttt{cyto3})             & 0.88 (\texttt{generic\_confocal\_3D\_unet})             & Higher robustness observed in CellPose                                 \\ \hline
-            Fluo-N3DH-CE          & Fluorescence              & 3D                 & 0.80 (\texttt{CPx})               & 0.78 (\texttt{generic\_confocal\_3D\_unet})             & Computationally challenging, slight CellPose advantage                 \\ \hline
-            Fluo-N3DH-CHO         & Fluorescence              & 3D                 & 0.84 (\texttt{CPx})               & 0.84 (\texttt{generic\_confocal\_3D\_unet})             & Similar results for both tools                                         \\ \hline
-            Fluo-N3DH-SIM+        & Fluorescence              & 3D                 & 0.94 (\texttt{cyto2})             & ---                                                     & Computationally intensive; PlantSeg failed due to resource constraints \\ \hline
-        \end{tabular}}
-\end{table}
+% % Master Table summarizing key segmentation results
+% \begin{table}[!ht]
+%     \centering
+%     \caption{Comparative Summary of Segmentation Performance (Jaccard Index)}
+%     \label{tbl:master_summary_segmentation}
+%     \renewcommand{\arraystretch}{1.3}
+%     \resizebox{\textwidth}{!}{
+%         \begin{tabular}{|l|l|c|c|c|l|}
+%             \hline
+%             \textbf{Dataset Name} & \textbf{Imaging Modality} & \textbf{Dimension} & \textbf{Best CellPose Model (JI)} & \textbf{Best PlantSeg Model (JI)}                       & \textbf{Comments}                                                      \\ \hline
+%             BF-C2DL-HSC           & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Excellent performance by both tools                                    \\ \hline
+%             BF-C2DL-MuSC          & Brightfield               & 2D                 & 0.99 (\texttt{livecell\_cp3})     & 0.99 (\texttt{confocal\_2D\_unet\_ovules\_ds2x})        & Consistently high accuracy                                             \\ \hline
+%             DIC-C2DH-HeLa         & DIC                       & 2D                 & 0.36 (\texttt{cyto3})             & 0.36 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Low accuracy due to imaging complexity                                 \\ \hline
+%             Fluo-C2DL-MSC         & Fluorescence              & 2D                 & 0.90 (\texttt{cyto3})             & 0.89 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Good accuracy, slight advantage for CellPose                           \\ \hline
+%             Fluo-N2DH-GOWT1       & Fluorescence              & 2D                 & 0.89 (\texttt{cyto3})             & 0.86 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Moderate accuracy, CellPose slightly better                            \\ \hline
+%             Fluo-N2DL-HeLa        & Fluorescence              & 2D                 & 0.75 (\texttt{cyto3})             & 0.75 (\texttt{confocal\_2D\_unet\_sa\_meristem\_cells}) & Equal performance by both tools                                        \\ \hline
+%             Fluo-C3DH-A549        & Fluorescence              & 3D                 & 0.98 (\texttt{CPx})               & 0.96 (\texttt{generic\_confocal\_3D\_unet})             & CellPose robust, strong performance by PlantSeg                        \\ \hline
+%             Fluo-C3DH-H157        & Fluorescence              & 3D                 & 0.93 (\texttt{cyto3})             & 0.88 (\texttt{generic\_confocal\_3D\_unet})             & Higher robustness observed in CellPose                                 \\ \hline
+%             Fluo-N3DH-CE          & Fluorescence              & 3D                 & 0.80 (\texttt{CPx})               & 0.78 (\texttt{generic\_confocal\_3D\_unet})             & Computationally challenging, slight CellPose advantage                 \\ \hline
+%             Fluo-N3DH-CHO         & Fluorescence              & 3D                 & 0.84 (\texttt{CPx})               & 0.84 (\texttt{generic\_confocal\_3D\_unet})             & Similar results for both tools                                         \\ \hline
+%             Fluo-N3DH-SIM+        & Fluorescence              & 3D                 & 0.94 (\texttt{cyto2})             & ---                                                     & Computationally intensive; PlantSeg failed due to resource constraints \\ \hline
+%         \end{tabular}}
+% \end{table}
 
 
 
@@ -341,7 +271,41 @@ Overall, the evaluations demonstrate that both CellPose and PlantSeg effectively
 % \textbf{Sparse Data and Missing Values:} Several models had missing scores for certain datasets, indicating either difficulties in processing specific images or incompatibility with the dataset structure. \\
 
 
+% Required packages in your preamble:
+% \usepackage{booktabs} % for better rules (\toprule, \midrule, \bottomrule)
+% \usepackage{rotating} % for \rotatebox
 
+\begin{table}[h] % 'htbp' suggests placement options: here, top, bottom, page
+    \centering
+    \caption{Top-Performing Jaccard Index Scores on 2D CTC Datasets.} % Updated caption
+    \label{tab:ctc_sota_top1_ji} % Updated label
+    % \small % Adjust font size if needed
+    \begin{tabular}{|l|c|} % 2 columns: Left-aligned text, Right-aligned number
+        \hline
+        Dataset/Metric   & Jaccard Index \\ \hline
+        BF-C2DL-HSC      & 0.895         \\ \hline
+        BF-C2DL-MuSC     & 0.784         \\ \hline
+        DIC-C2DH-HeLa    & 0.871         \\ \hline
+        Fluo-C2DL-Huh7   & 0.811         \\ \hline
+        Fluo-C2DL-MSC    & 0.687         \\ \hline
+        Fluo-N2DH-GOWT1  & 0.938         \\ \hline
+        Fluo-N2DL-HeLa   & 0.913         \\ \hline
+        PhC-C2DH-U373    & 0.931         \\ \hline
+        PhC-C2DL-PSC     & 0.756         \\ \hline
+        Fluo-C3DH-A549   & 0.908         \\ \hline
+        Fluo-C3DH-H157   & 0.890         \\ \hline
+        Fluo-C3DL-MDA231 & 0.710         \\ \hline
+        Fluo-N3DH-CE     & 0.759         \\ \hline
+        Fluo-N3DH-CHO    & 0.925         \\ \hline
+        Fluo-N3DL-DRO    & 0.760         \\ \hline
+        Fluo-N3DL-TRIC   & 0.821         \\ \hline
+        Fluo-N3DL-TRIF   & 0.793         \\ \hline
+    \end{tabular}
+    % Optional notes below the table
+    % \begin{tablenotes}
+    %     \item[*] Note: Asterisk indicates ... (explain if necessary, e.g., specific challenge version or if the score itself is notable)
+    % \end{tablenotes}
+\end{table}
 
 
 \section{Conclusion and Final Remarks}
@@ -351,7 +315,42 @@ In this work, we presented TSeg, an intuitive and comprehensive pipeline specifi
 
 One of the key contributions of our work is the seamless integration of state-of-the-art deep learning methodologies into an accessible and user-friendly platform. By incorporating powerful segmentation and detection tools such as CellPose and PlantSeg into TSeg, users benefit from high-performing deep learning algorithms without requiring extensive expertise in deep learning or computer vision frameworks. Additionally, our implementation of TSeg as a plugin for the Napari viewer further simplifies its adoption, providing interactive visualization and intuitive manipulation of 3D microscopy data.
 
-The user-friendly interface combined with advanced algorithmic capabilities makes TSeg broadly applicable not only to studies involving \textit{T. gondii} but also adaptable to various other cell types and organisms. Moving forward, we envision continuous enhancements in computational efficiency and scalability, further broadening the usability of TSeg across larger and more complex datasets. Ultimately, TSeg demonstrates significant potential in accelerating biological research by making sophisticated deep-learning-driven analyses accessible to a wider scientific audience.
+TSeg significantly enhances the daily workflow of biological researchers by democratizing the analysis of complex 3D microscopic image data, making sophisticated quantitative studies accessible even to users without deep learning or extensive programming knowledge. Its implementation as a Napari plugin provides an intuitive graphical interface featuring immediate 3D visualization and feedback at each stage, allowing users to iteratively refine parameters and evaluate intermediate results. This user-centric design, combined with powerful underlying algorithms leveraging state-of-the-art tools like CellPose and PlantSeg, substantially improves the speed and quality of cell segmentation and tracking compared to manual methods or pipelines requiring extensive customization, directly addressing the challenges of time-consuming and expertise-heavy analysis.
 
+Furthermore, TSeg functions as an adhesive component within the broader open-source scientific ecosystem. Built upon the familiar SciPy stack and integrated directly into Napari, its utility extends beyond its initial focus on \textit{T. gondii}, proving adaptable to various other cell types and organisms. Its development exemplifies open-science principles through its open-source availability and reliance on well-regarded packages, aligning with the collaborative spirit fostered by communities such as PyOpenSci and the Journal of Open Source Software (JOSS). Looking forward, continuous enhancements in computational efficiency and scalability are envisioned to further broaden TSeg's usability across larger and more complex datasets, ultimately fulfilling its significant potential to accelerate biological research by making advanced analyses readily available to a wider scientific audience.
+
+
+\section{Limitations and Future Directions}
+While TSeg provides an intuitive and integrated pipeline for 3D cell analysis, several limitations should be acknowledged.
+
+\textbf{Limitations of TSeg:}
+\begin{itemize}
+    \item Its performance can face computational constraints when processing large 3D datasets. This is particularly true when utilizing integrated tools like PlantSeg, which sometimes encountered memory limitations on complex CTC samples. Consequently, TSeg's overall accuracy is inherently linked to the performance and limitations of the specific tools it incorporates, namely PlantSeg and CellPose.
+
+    \item The tracking module, relying on centroid calculation and the Hungarian algorithm, may encounter difficulties with complex cellular events such as division, fusion, or temporary occlusion. This could potentially lead to assignment errors in dense or highly dynamic scenarios.
+
+    \item  Although designed with generic functions and evaluated on various cell types, TSeg was initially developed focusing on \textit{T. gondii}. Its effectiveness might therefore vary on significantly different cell types or imaging modalities not covered in the evaluations, requiring further validation for broader generalization.
+
+    \item Furthermore, the motility classification employs an AR model which might not capture the full complexity of diverse biological movement patterns observed in different cell types or conditions.
+
+    \item  Finally, while the preprocessing module addresses common artifacts like vignetting and noise, it may not encompass all specific artifacts encountered in varied microscopy setups, potentially necessitating external preprocessing steps for optimal results.
+
+\end{itemize}
+\textbf{Future Directions:}
+\begin{itemize}
+    \item Addressing the computational bottlenecks to improve scalability and efficiency, especially for large 3D time-lapse datasets, is a key priority for future development. This could involve optimizing existing algorithms or exploring strategies like data tiling.
+
+    \item Expanding the repertoire of integrated segmentation and tracking algorithms beyond CellPose and PlantSeg can offer users greater flexibility. Incorporating more diverse algorithms could provide potentially improved performance tailored to specific biological contexts or challenging imaging conditions.
+
+    \item Enhancing the robustness of the tracking algorithm is crucial for broader applicability. Future work should focus on better handling complex events like high cell density, cell division, fusion events, and temporary disappearance or occlusion of cells, perhaps exploring alternative tracking paradigms. Improving the tracking module could enable TSeg to handle more complex scenarios, such as mitochondrial dynamics or cell-cell interactions, which are common in biological systems.
+
+    \item Advancing the motion classification module by exploring non-linear models or alternative machine learning approaches could provide deeper insights into complex motility phenotypes beyond the capabilities of the current AR model. Furthermore, exploring the spectrum of motion of parameterized trajectories could yield valuable insights into the underlying biological processes if a true correspondance between the motility phenotypes and the motion manifold is established.
+
+    \item More extensive validation of TSeg's generalizability across a wider range of 3D cell types, organisms, and imaging modalities is needed to better define its scope and reliability in diverse research settings.
+
+    \item Integrating TSeg's outputs seamlessly with downstream quantitative analysis tools would facilitate more comprehensive biological investigations, allowing researchers to easily move from segmentation and tracking to deeper statistical analysis.
+
+    \item Lastly, incorporating mechanisms for user-guided refinement within the Napari interface could improve usability. Allowing users to interactively correct segmentation or tracking results would be particularly beneficial in ambiguous or challenging cases.
+\end{itemize}
 
 \end{document}

@@ -63,7 +63,7 @@ For addressing all the aforementioned issues we turned to contrastive coding in 
 \label{cc:Methodology}
 \section{Methodology}
 \begin{figure}
-    \includegraphics[width=\textwidth]{./figures/cc/arch.jpg}
+    \includegraphics[width=\textwidth]{./figures/cc/arch.png}
     \caption{(a) The architecture of our contrastive network applied to two consecutive frames. (b) The internals of an MBConv layer.} \label{fig:architecture}
 \end{figure}
 
@@ -126,8 +126,10 @@ Each iteration of the training, we construct the matrix \(R^{n \times d}\) which
 \subsection{Similarity and loss}
 We choose the cosine similarity between vectors as our similarity metric. The vector output of the convolutional network is, therefore, projected onto the \(L2\) unit sphere (i.e., normalized), before being used with dot products. For practical numerical stability, though, we use logSoftmax with negative log-likelihood instead of softmax and cross-entropy.
 
+\subsection{Interactive Segmentation Workflow}
+Following the contrastive training phase, the model facilitates interactive segmentation of target structures in new images or videos. The workflow supports two modes of user interaction. In the simpler mode, the user initiates segmentation by clicking a single point on an example of their region of interest (ROI). The image patch centered at this point serves as a positive anchor; its learned embedding vector is compared against the embeddings of all patches across the image using cosine similarity. This process generates a similarity map highlighting regions visually consistent with the anchor patch, which the user subsequently thresholds to produce a binary segmentation mask. 
 
-
+For scenarios requiring finer control or dealing with more complex backgrounds, the user can employ a more complex interaction mode. This involves selecting multiple positive points within the ROI (via clicks) and specifying multiple negative points representing background or unwanted structures (e.g., via Shift + click). The system then calculates an average embedding vector for the positive anchor points and another for the negative points. The final similarity map is computed based on similarity to the average positive embedding while maximizing dissimilarity to the average negative embedding (conceptually achieved by subtracting the negative embedding influence from the positive one). The user then interactively selects a threshold value for this refined similarity map to generate the final segmentation.
 
 % 4- use figures, tables, graphs here.
 
@@ -138,7 +140,7 @@ We evaluate our method on a subset of 2D datasets from the CTC. The CTC offers a
 
 For each dataset, or part of dataset, we leave out 20\% of the data as a testing portion, and of the remaining 80\%, we take 70\% of it for training, and 30\% for validation. We use the loss on the validation to choose the best model, and report the dice coefficient using the best trained model on the testing portion. In each iteration we sample 1024 patches within the input image, and construct the matrix with the number of negative samples \(m = 9\), and the size of representation vector \(d = 64\). As noted before, the contrastive loss only minimizes a lower bound on the error, so the training error of the negative log likelihood loss never goes down to \(0\). We train to 50 epochs for each part of the dataset and use the Adam optimizer as well with the same \(10e^-3\) learning rate. To generate masks we take user's input in the form of at least one point indicating the coordinates of the object of interest. These coordinates represent the center of the patch whose representation vector will be the anchor to compare against. We sweep the entire image with patches of size \({15}\times{15}\) and stride of 1, generating a representation vector per each pixel in the image, and report the dot product of these vectors and the anchor vector. We use reflective padding instead of zero padding. Finally, the user can select a suitable threshold to binarize the raw mask into the final mask.
 
-for datasets BF-C2DL-HSC and BF-C2DL-MuSC, artifacts in the image that looked similar to the ROIs shared similar embedding space thus wrongly identified and highlighted as ROI. a simple pre-processing or post processing could resolve this issue.
+For datasets BF-C2DL-HSC and BF-C2DL-MuSC, artifacts in the image that looked similar to the ROIs shared similar embedding space thus wrongly identified and highlighted as ROI. A simple pre-processing or post processing could resolve this issue.
 
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{./figures/cc/BF-C2DL-HSC.png}
@@ -175,9 +177,42 @@ for datasets BF-C2DL-HSC and BF-C2DL-MuSC, artifacts in the image that looked si
     \end{tabular}
 \end{table}
 
-Table~\ref{tbl:iou_dice} shows a mix of strong and moderate results for dice coefficients and precision. The BF-C2DL-HSC and BF-C2DL-MuSC datasets exhibit the weakest performance, with Dice scores of 0.341 and 0.261, respectively. This poor performance is due to the brightfield imaging modality, which introduces significant intensity variations and makes boundary segmentation challenging. Additionally, artifacts and shadows within the hydrogel environment likely contribute to false positives and inconsistent mask predictions. The DIC-C2DH-HeLa dataset achieves a moderate Dice score of 0.711, showing a reasonable ability to capture cell structures. However, the fine-grained details of the HeLa cells in differential interference contrast (DIC) imaging pose difficulties in maintaining sharp boundary delineation, leading to a loss in segmentation accuracy.
+Table~\ref{tbl:iou_dice} shows a mix of strong and moderate results for dice coefficients and precision. The BF-C2DL-HSC and BF-C2DL-MuSC datasets exhibit the weakest performance, with Dice scores of 0.341 and 0.261, respectively. This poor performance is due to the artifacts apparent in the images, which share a strong resemblance with the target stem cells in texture and intensity. These artifacts and shadows within the hydrogel environment likely contribute to false positives and inconsistent mask predictions. The DIC-C2DH-HeLa dataset achieves a moderate Dice score of 0.711, showing a reasonable ability to capture cell structures. However, the fine-grained details of the HeLa cells in differential interference contrast (DIC) imaging pose difficulties in maintaining sharp boundary delineation, leading to a loss in segmentation accuracy. The top performing algorithms on the 2D CTC datasets are shown in Table~\ref{tab:ctc_sota_top1_ji_2d_transposed} for comparison.
+
+
+% Required packages in your preamble:
+% \usepackage{booktabs} % for better rules (\toprule, \midrule, \bottomrule)
+
+\begin{table}[h] % 'htbp' suggests placement options: here, top, bottom, page
+    \centering
+    \caption{Top-Performing Jaccard Index Scores on 2D CTC Datasets.} % Updated caption
+    \label{tab:ctc_sota_top1_ji_2d_transposed} % Updated label
+    % \small % Adjust font size if needed
+    \begin{tabular}{|l|c|} % 2 columns: Left-aligned text, Right-aligned number
+        \hline
+        Dataset/Metric   & Jaccard Index \\ \hline
+        BF-C2DL-HSC*     & 0.895         \\ \hline
+        BF-C2DL-MuSC*    & 0.784         \\ \hline
+        DIC-C2DH-HeLa*   & 0.871         \\ \hline
+        Fluo-C2DL-Huh7   & 0.811         \\ \hline
+        Fluo-C2DL-MSC    & 0.687         \\ \hline
+        Fluo-N2DH-GOWT1* & 0.938         \\ \hline
+        Fluo-N2DL-HeLa*  & 0.913         \\ \hline
+        PhC-C2DH-U373*   & 0.931         \\ \hline
+        PhC-C2DL-PSC*    & 0.756         \\ \hline
+    \end{tabular}
+    % Optional notes below the table
+    % \begin{tablenotes}
+    %     \item[*] Note: Asterisk indicates ... (explain if necessary, e.g., specific challenge version or if the score itself is notable)
+    % \end{tablenotes}
+\end{table}
 
 For the Fluo-C2DL-MSC dataset, the Dice coefficient of 0.591 indicates moderate segmentation quality. The elongated morphology of mesenchymal stem cells complicates boundary definitions, leading to thresholding artifacts. The PhC-C2DH-U373 dataset, with a Dice coefficient of 0.510, shows lower performance due to halo effects in phase contrast imaging, which interfere with precise boundary extraction and introduce noise.
+
+The moderate performance on the DIC-C2DH-HeLa dataset (Dice 0.711) can be further understood by considering the large size and complex internal structure of these cells relative to the fixed patch size (15x15 pixels) used by our model. Since contrastive learning operates by comparing the local texture within these small patches, an anchor point selected within a large cell represents only a specific internal feature. Consequently, the resulting segmentation tends to highlight only those regions across the image sharing that particular local texture, often leading to incomplete masks that capture parts of the cell rather than its entirety.
+
+Challenges were also encountered with the Fluo-N2DL-HeLa dataset (Dice 0.655), primarily stemming from the very low contrast between the labeled cells and the image background. This minimal visual distinction makes it difficult for the contrastive learning approach, which relies on differentiating similar and dissimilar patches, to effectively separate cell regions from the background, thus hindering accurate boundary delineation.
+
 
 Overall, the results suggest that datasets with clear and well-defined fluorescence-stained boundaries (such as GOWT1) tend to perform best, while datasets relying on phase contrast, brightfield, or DIC imaging suffer from boundary inconsistencies and intensity variations that complicate segmentation.
 
@@ -190,7 +225,7 @@ Beyond threshold adjustments, a number of strategies could further improve perfo
     \item \textbf{Use Multi-scale or Pyramid Features.} Incorporating a multi-scale approach (e.g., learning features from multiple patch sizes) can help capture both the global context of larger cells and the subtle boundaries in smaller or low-contrast targets.
     \item \textbf{Refine Negative Sampling.} Randomly sampling negatives can push away genuinely similar patches. A more stratified or context-aware sampling strategy can reduce such conflicts and help preserve true positives.
     \item \textbf{Domain-specific Augmentations.} For brightfield or DIC images, augmentations such as slight intensity inversions or custom brightness manipulations can help the model learn invariant features against heterogeneous illumination and shadows.
-    % \item \textbf{Incorporate Boundary-aware or Mask-guided Losses.} Particularly for small or clustered cells, a minimal amount of boundary supervision (e.g., a boundary mask or a few scribbles) can guide the model to learn clearer cell outlines.
+          % \item \textbf{Incorporate Boundary-aware or Mask-guided Losses.} Particularly for small or clustered cells, a minimal amount of boundary supervision (e.g., a boundary mask or a few scribbles) can guide the model to learn clearer cell outlines.
     \item \textbf{Smaller Patches with Additional Context.} Reducing the patch size focuses on local cell texture, but simultaneously providing a lower-resolution context channel can keep global cues. This helps avoid confusion from large background areas.
     \item \textbf{Leverage Small Amounts of Label Information.} In practice, adding even sparse or partial labels, even minimal bounding boxes or scribbles, for a few frames can anchor the contrastive model, mitigating background confusion in tough domains.
 \end{itemize}

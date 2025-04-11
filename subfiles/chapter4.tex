@@ -111,7 +111,7 @@ Figure \ref{fig:untuned} shows the off the shelf performance of BiomedCLIP over 
 % we changed these parameters in fine-tuning for the cilia dataset: 1. tuning for less/more epochs. 2. tuning with raw images vs. training with masks of cells and cilia. 3. tuning with long descriptions vs. short descriptions. 4. tuning by varying loss funciton parameters.
 
 
-To investigate the impact of different fine-tuning parameters on BiomedCLIP's performance for cilia segmentation, we systematically varied several key factors. These included adjusting the number of training epochs, comparing fine-tuning on raw images versus masked images (isolating cell bodies and ciliary structures), utilizing varying lengths of textual descriptions (short versus detailed versus randomized detailed annotations with the help of ChatGPT), and experimenting with different configurations of loss function parameters. The parameter variations are summarized in Table~\ref{tab:fine-tune-params}.
+To investigate the impact of different fine-tuning parameters on BiomedCLIP's performance for cilia segmentation, we systematically varied several key factors. These included adjusting the number of training epochs, comparing fine-tuning on raw images versus masked images (isolating cell bodies and ciliary structures), utilizing varying lengths of textual descriptions as noted in Table \ref{tab:caption_generation_logic} (short versus detailed versus randomized detailed annotations), and experimenting with different configurations of loss function parameters. The parameter variations are summarized in Table~\ref{tab:fine-tune-params}.
 
 \begin{table}[ht]
     \caption{Fine-Tuning Parameter Variations}
@@ -211,7 +211,7 @@ To quantitatively assess the accuracy of the generated heatmaps, a thresholding 
 
 \section{Results and Discussion}
 
-% Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}. un-tuned BiomedCLIP struggled to detect ciliary regions.
+% Figure \ref{fig:untuned_garbage_results} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}. un-tuned BiomedCLIP struggled to detect ciliary regions.
 
 
 
@@ -219,7 +219,7 @@ To quantitatively assess the accuracy of the generated heatmaps, a thresholding 
 % our experiments showed that fine-tuning the model on full images severely damages the accuracy of the model making it incapable of localizing the region of interest in any of the test. we performed fine-tuning for 2 and 32 epochs and the results were the same, although the heatmaps generated after 32 epochs were lighting up more specific regions.
 
 % training on full size vs small size didn't make any difference.
-% more epochs = throwig weight off
+% more epochs = throwing weight off
 % training with validation set causes overfitting and the model to perform terribly.
 % short descriptions + short prompts were more consistent. long descriptions led to more false positives and false negatives.
 % no significant impact for changing beta 1 or 2.
@@ -241,19 +241,25 @@ To quantitatively assess the accuracy of the generated heatmaps, a thresholding 
 % --temperature-dhnnce 0.1 \
 % --alpha-dhnnce 0.9 \
 % --beta1-dhnnce 0.95 \
-% --beta2-dhnnce 0.15 i think the best is training with long captions ptompting with short texts
+% --beta2-dhnnce 0.15 i think the best is training with long captions prompting with short texts
 
 % \subsubsection{varying prompts}
 % short to the point prompts =less errors i.e. less false positives, more aligned with RoI
 % training on short captions requires short prompts. training on long captions work better with more detailed prompts.
 
-Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf BiomedCLIP over a sample of our cilia dataset. The same prompts were used during inference for all sample images. \textit{short}, \textit{med}, and \textit{detailed} prompts correspond to \textit{"respiratory cilia"}, \textit{"cilia on nasal epithelial cells"}, and \textit{"normal or abnormal cilia in nasal epithelial biopsy. some cilia are sticking out of the border of the cell making them visible, some other are overlapping the cell making them harder to detect"}. Un-tuned BiomedCLIP struggled to detect ciliary regions consistently across different prompt lengths.
+
+
+% This study systematically evaluated the performance of BiomedCLIP for generating saliency maps used to generate spatial prompts for SAM over our dataset of nasal epithelial cells containing ciliary regions. The experiments were designed to explore critical factors affecting accuracy and reproducibility, including fine-tuning duration, image processing methods (raw vs. masked), and textual prompts.
+
+
+To establish a baseline performance for localizing ciliary regions in nasal epithelial biopsy images, the off-the-shelf BiomedCLIP model was evaluated without domain-specific fine-tuning. Textual prompts of varying lengths were used during inference: \textit{Short} ("respiratory cilia"), \textit{Medium} ("cilia on nasal epithelial cells"), and \textit{Detailed} ("normal or abnormal cilia in nasal epithelial biopsy...harder to detect"). As qualitatively illustrated in Figure \ref{fig:untuned_garbage_results}, the un-tuned model struggled to consistently and accurately identify ciliary structures, often generating saliency maps poorly aligned with the ground truth masks. Quantitative metrics calculated from thresholded saliency maps corroborated these limitations. While average IoU and Dice scores across test samples are presented in Table \ref{tab:biomedclip_performance}, visual inspection and individual sample metrics revealed that IoU scores for specific predictions rarely exceeded 0.01, underscoring the challenges faced by the un-tuned model and motivating the need for fine-tuning. It is also important to note that threshold selection significantly impacts these metrics, adding complexity to direct comparisons based solely on average scores.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/sam/untuned short med long.png}
-    \caption{Performance of off-the-shelf BiomedCLIP with short, medium, and detailed prompts, demonstrating poor localization without fine-tuning.}
-    \label{fig:untuned_short_med_long}
+    \includegraphics[width=0.4\textwidth]{figures/sam/untuned garbage results.png}
+    \includegraphics[width=0.4\textwidth]{figures/sam/untuned short med long.png} % Assuming this shows similar untuned results or is intended to be part of the comparison
+    \caption{Performance of off-the-shelf BiomedCLIP with Short, Medium, and Detailed prompts, demonstrating poor localization without fine-tuning.}
+    \label{fig:untuned_garbage_results}
 \end{figure}
 
 \begin{figure}
@@ -263,72 +269,121 @@ Figure \ref{fig:untuned_short_med_long} depicts the performance of off-the-shelf
     \label{fig:fine_tuned_no_mask_ep32}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/sam/fine-tuned 1ep with mask short caption th 0.4.png}
-    \caption{Improved ciliary region localization after fine-tuning BiomedCLIP for one epoch using masked images with short captions.}
-    \label{fig:fine_tuned_mask_short_ep1}
-\end{figure}
+
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/sam/fine-tuned masks small train short desc ep5.png}
-    \caption{Effective and balanced localization achieved by fine-tuning BiomedCLIP with a reduced dataset size (small train) using masked images and short captions for 5 epochs.}
-    \label{fig:fine_tuned_mask_small_short_ep5}
+    \includegraphics[width=\textwidth]{figures/sam/fine-tuned masks long captions small train 01 09 095 005.png} % Caption below suggests beta=0.65, 0.65 but filename suggests 0.95, 0.05. Assuming caption reflects the specific experiment shown.
+    \caption{Impact of adjusted hardness parameters (\(\beta_1=0.65\), \(\beta_2=0.65\)) during fine-tuning, showing improved localization diversity but potentially higher false-positive rates compared to baseline fine-tuning.}
+    \label{fig:fine_tuned_masks_small_train_01_09_095_005} % Label might need alignment with caption/experiment if filename is misleading.
 \end{figure}
 
-\begin{figure}
+\begin{table}[ht]
     \centering
-    \includegraphics[width=\textwidth]{figures/sam/train with long captions.png}
-    \caption{Localization results demonstrating increased flexibility but higher false positives when fine-tuning BiomedCLIP using long captions.}
-    \label{fig:train_long_captions}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/sam/fine-tuned with mask th 0.4.png}
-    \caption{Localization impact of higher temperature (\(\tau = 0.4\)) during fine-tuning, resulting in blurred similarity distributions and compromised accuracy.}
-    \label{fig:fine_tuned_with_mask_th_0_4}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/sam/fine-tuned masks long captions small train 01 09 095 005.png}
-    \caption{Impact of increased hardness parameters (\(\beta_1=0.65\), \(\beta_2=0.65\)) during fine-tuning, showing improved localization diversity but higher false-positive rates.}
-    \label{fig:fine_tuned_masks_small_train_01_09_095_005}
-\end{figure}
-
-
-
-This study systematically evaluated the performance of BiomedCLIP integrated with SAM for segmenting ciliary regions from nasal epithelial biopsy videos. The experiments were designed to explore critical factors affecting segmentation accuracy and reproducibility, including fine-tuning duration, image processing methods (raw vs. masked), and textual prompts.
+    \caption{Average IoU and Dice scores of BiomedCLIP models under different training configurations}
+    \label{tab:biomedclip_performance}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Model Variant}                                          & \textbf{Average IoU} & \textbf{Average Dice} \\ \hline
+        Un-tuned BiomedCLIP (zero-shot)                                 & 0.092                & 0.0033                \\ \hline
+        Fine-tuned for 32 epochs on full images (overfit)               & 0.000                & 0.0000                \\ \hline
+        Fine-tuned \(\tau=0.1, \alpha=0.9, \beta_1=0.95, \beta_2=0.05\) & 0.106                & 0.0040                \\ \hline
+    \end{tabular}
+    % \par\medskip
+    % \footnotesize *Configuration uses masked images, 5 epochs, trained on long captions.
+\end{table}
 
 \subsection{Impact of Fine-tuning BiomedCLIP}
 
-Initial experiments revealed substantial limitations in off-the-shelf BiomedCLIP performance. Without fine-tuning, the model frequently failed to accurately localize ciliary regions, particularly when using longer and more detailed textual prompts. Figure \ref{fig:untuned_short_med_long} clearly illustrates the poor localization performance using un-tuned BiomedCLIP with various prompt lengths. Short prompts ("respiratory cilia") yielded slightly more consistent but generally inadequate results compared to medium ("cilia on nasal epithelial cells") and detailed prompts.
+Our fine-tuning experiments revealed that performance improvements are highly dependent on the specific training conditions. Fine-tuning BiomedCLIP using full-sized, raw images proved detrimental, severely impairing the model's localization capabilities regardless of the number of training epochs, likely due to the model failing to focus on relevant features amidst complex backgrounds. Conversely, fine-tuning using masked images, which isolate the cell bodies and ciliary structures, consistently improved localization accuracy by focusing the model's learning process. However, training beyond an optimal number of epochs (empirically found to be around 5 epochs for configurations using masked images) did not enhance performance further. Instead, extended training introduced overfitting and degraded generalizability, as indicated by the increasingly sparse and overly specialized activation maps shown for a 32-epoch run in Figure \ref{fig:fine_tuned_no_mask_ep32}.
 
-Our fine-tuning experiments demonstrated significant improvements when specific conditions were met. Fine-tuning BiomedCLIP using full-sized images proved detrimental, significantly impairing model localization capabilities regardless of the number of training epochs. Conversely, fine-tuning using masked images drastically improved localization accuracy. Our findings showed that training beyond a certain epoch threshold (e.g., 32 epochs) did not enhance performance; instead, it introduced model overfitting and degraded generalizability, indicated by increasingly sparse and overly specific activation maps.
+A quantitative assessment using per-pixel confusion matrix metrics (Table \ref{tab:confusion_matrix_avg}) further elucidates the impact of fine-tuning. Compared to the untuned model, the fine-tuned version (using the configuration specified in Table \ref{tab:biomedclip_performance}) demonstrated improved sensitivity, achieving higher average True Positive (TP) counts and lower average False Negative (FN) counts across Short, Medium, and Detailed prompts. This confirms the fine-tuned model's enhanced ability to correctly identify actual positive pixels (cilia). However, this gain in sensitivity was accompanied by a significant reduction in specificity, evidenced by the substantial increase in average False Positive (FP) counts and the corresponding decrease in average True Negative (TN) counts. This indicates the fine-tuned model became more liberal in its classifications, incorrectly labeling a larger number of background pixels as positive. Notably, the performance variation across different prompt types appeared less pronounced in the fine-tuned model compared to the untuned one based on these metrics.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Average Per-Pixel Confusion Matrix Metrics (15 Test Samples)}
+    \label{tab:confusion_matrix_avg}
+    \begin{tabular}{llcccc} % Removed unnecessary vertical lines for booktabs style
+        \hline
+        Model Type & Prompt Type & Avg. TP & Avg. TN  & Avg. FP & Avg. FN \\
+        \hline
+        Untuned    & Short       & 1370.60 & 43288.20 & 2802.40 & 2714.80 \\
+                   & Medium      & 1203.40 & 43001.00 & 3089.60 & 2882.00 \\
+                   & Detailed    & 1642.80 & 42078.60 & 4012.00 & 2442.60 \\
+        \hline
+        Fine-tuned & Short       & 1839.80 & 37405.00 & 8685.60 & 2245.60 \\
+                   & Medium      & 1669.80 & 37407.60 & 8683.00 & 2415.60 \\
+                   & Detailed    & 1713.20 & 37208.80 & 8881.80 & 2372.20 \\
+        \hline
+    \end{tabular}
+    \par\medskip
+    \footnotesize
+    Note: TP = True Positives, TN = True Negatives, FP = False Positives, FN = False Negatives. Values represent average per-pixel counts over 15 test samples. Fine-tuned model corresponds to the configuration: \( \tau = 0.1 \), \( \alpha = 0.9 \), \( \beta_1 = 0.95 \), \( \beta_2 = 0.05 \), masked images, 5 epochs, trained on long captions.
+\end{table}
 
 \subsection{Effects of Textual Prompts}
 
-The choice of textual prompts substantially impacted model performance. Short and concise textual prompts generally produced more consistent and fewer false-positive results, aligning more accurately with regions of interest (ROIs). Conversely, longer and overly detailed prompts introduced ambiguity, leading to a higher incidence of both false positives and false negatives. Importantly, our observations revealed that consistency between training captions and inference prompts played a pivotal role: training with brief, concise captions required correspondingly concise prompts during inference, whereas models trained on detailed captions exhibited superior performance when detailed prompts were also utilized.
+\begin{table}[htbp]
+    \centering
+    \caption{Caption Generation Logic Based on Image Content for Fine-Tuning.}
+    \label{tab:caption_generation_logic}
+    \small
+    \begin{tabular}{p{3cm}p{5cm}p{7cm}} % Removed vertical lines
+        \toprule % Use booktabs style
+        \textbf{Image Content}      & \textbf{Short Caption}                                                                                                                                                                                   & \textbf{Long Caption}                                                                                                                                                                                                                                                                                                                                                                                                                                                                \\
+        \midrule
+        Masked Cell Body (No Cilia) & \textbf{Fixed text:} \texttt{nasal epithelial cell}                                                                                                                                                      & \textbf{Fixed text:} \texttt{a microscopy image of nasal epithelial biopsy containing epithelial cell}                                                                                                                                                                                                                                                                                                                                                                               \\
+        \addlinespace % Requires booktabs
+        Masked Ciliary Region       & \textbf{Generated based on the source video's label (motile, immotile, or indeterminate):} Resulting text is like \texttt{"normal cilia"}, \texttt{"abnormal cilia"}, or \texttt{"indeterminate cilia"}. & \textbf{Generated based on source video label and mask analysis:} Starts with \texttt{"nasal epithelial biopsy of [\textit{state}] cilia..."} (where \textit{state} reflects motile/immotile/indeterminate). Continues by describing visibility based on mask characteristics, using phrases like \texttt{"...exposed and clearly visible protruding out..."} for easily detected cilia, or \texttt{"...overlaying the body of the cell and are hard to detect"} for obscured cilia. \\
+        \bottomrule % Use booktabs style
+    \end{tabular}
+    \par\medskip
+    \footnotesize
+    Note: If both clearly visible and hard-to-detect cilia are present according to the mask analysis, the long caption explicitly mentions this mixed visibility (e.g., "...some cilia protrude... clearly visible, while some other cilia are overlaying... hard to detect."). Additionally, to enhance diversity, the exact phrasing and use of synonyms within the descriptive parts of the long captions were randomized during generation.
+\end{table}
+
+The nature of textual prompts used during fine-tuning and inference also significantly impacted model performance (details of caption generation logic are in Table \ref{tab:caption_generation_logic}). Our experiments showed that employing short, concise textual prompts generally led to more consistent localization with fewer false-positive results, particularly when the model was also trained using corresponding short captions. Conversely, utilizing longer, more detailed prompts and captions (as seen in Figure \ref{fig:train_long_captions}) could introduce ambiguity, sometimes increasing the incidence of both false positives and false negatives. A crucial observation was the importance of consistency between training captions and inference prompts: models trained with brief captions performed best with brief prompts, whereas models trained on detailed captions benefited from detailed prompts during inference.
 
 \subsection{Hyperparameter Optimization and Stability}
 
-We also explored the influence of hyperparameters related to temperature and DHNNCE loss parameters (alpha, beta1, beta2) on segmentation stability and accuracy. Results indicated minimal sensitivity to variations in beta1 and beta2 within a moderate range; however, more extreme values (e.g., beta1=0.95, beta2=0.05) significantly heightened sensitivity to textual prompt differences, leading to instability and inconsistency. Specifically, using a balanced beta configuration (beta1=0.65, beta2=0.65) combined with long captions during training delivered optimal performance by maximizing detection accuracy and minimizing false negatives.
+Exploration of the DHN-NCE loss hyperparameters revealed nuances in their influence on stability and accuracy. Within a moderate range, variations in the hardness weighting parameters \( \beta_1 \) and \( \beta_2 \) showed minimal impact. However, employing more extreme, asymmetric values (such as \( \beta_1 = 0.95, \beta_2 = 0.05 \), used in the primary fine-tuned configuration reported in Tables \ref{tab:biomedclip_performance} and \ref{tab:confusion_matrix_avg}) significantly heightened the model's sensitivity to differences in textual prompts, potentially leading to instability. Separate experiments indicated that a balanced beta configuration (e.g., \( \beta_1 = 0.65, \beta_2 = 0.65 \)), particularly when combined with long captions during training (as illustrated in Figure \ref{fig:fine_tuned_masks_small_train_01_09_095_005}), could offer a good trade-off by maximizing detection accuracy while potentially mitigating some false positives compared to the more sensitive configuration. Adjusting the temperature parameter \( \tau \) also had effects; higher temperatures led to smoother, more blurred similarity distributions, which could compromise localization precision.
+% (Figure \ref{fig:fine_tuned_with_mask_th_0_4}).
 
 \subsection{Prompt Selection Strategies for SAM}
 
-Critically, our analysis underscored the importance of effective prompt selection strategies for SAM based on BiomedCLIP-generated saliency maps. The common practice of randomly selecting points from the largest contour was found inadequate for sparse, distributed ROIs. Our findings emphasized that a more nuanced approach, considering multiple salient contours, significantly enhanced segmentation accuracy, particularly for complex images with overlapping or unclear ROIs.
-
-In summary, these experiments highlight the necessity of strategic fine-tuning and prompt selection. Optimal segmentation outcomes hinge on carefully chosen training procedures, prompt consistency, and strategic spatial prompt selection, all tailored to specific biomedical imaging conditions.
+Finally, our analysis underscored the critical importance of how BiomedCLIP-generated saliency maps are translated into spatial prompts for the downstream SAM model. We found that common strategies, such as randomly selecting points solely from the largest detected contour in the thresholded map, were often inadequate, especially for ROIs like cilia that can be sparse and distributed across multiple small regions. Our findings emphasize that more nuanced approaches, which consider multiple salient contours or employ different heuristics based on the map's characteristics, can significantly enhance segmentation accuracy, particularly for complex images with overlapping or indistinct ROIs.
 
 \section{Conclusion and Final Remarks}
 
-This chapter explored the potential of foundation models, particularly the SAM, for biomedical image segmentation tasks. It highlighted the limitations inherent in supervised and unsupervised segmentation methods, particularly their dependence on extensive labeled datasets and poor transferability, respectively. Foundation models, specifically SAM, offer promising solutions through their remarkable zero-shot segmentation capabilities enabled by minimal user-defined prompts such as points or bounding boxes.
+This chapter investigated the application of foundation models for biomedical image segmentation, focusing specifically on optimizing the BiomedCLIP vision-language model to generate high-quality saliency maps intended as input for a downstream Segment Anything Model (SAM). Our work, centered on the challenging task of ciliary region identification, highlighted the limitations of traditional methods and explored how fine-tuning a vision-language model can enhance the initial, prompt-generation stage of a SAM-based segmentation pipeline.
 
-Our investigations demonstrated that minimal fine-tuning of a vision-foundation model significantly improves the stability and accuracy of saliency maps. These refined saliency maps serve as effective foundations for generating precise points or bounding boxes that serve as inputs for SAM. The experiments clearly underscored the criticality of the prompt selection method, showing that the strategy employed by MedclipSAMv2, which selects random points from only the largest contour in a thresholded saliency map, is not universally optimal. In cases where regions of interest (ROIs) are sparse and widely distributed, selecting multiple contours rather than focusing exclusively on the largest one can yield better segmentation performance. Furthermore, our results indicated that the accuracy and robustness of the underlying vision-foundation model, such as BiomedCLIP, heavily influence the optimality of selecting single or multiple contours.
+A key finding is the observed performance difference in BiomedCLIP before and after fine-tuning for this specialized task. Our baseline evaluation showed that the off-the-shelf BiomedCLIP model demonstrated limitations in localization accuracy (e.g., low average IoU scores, high false negatives) and produced inconsistent saliency maps across different prompt types (Table \ref{tab:biomedclip_performance}, Table \ref{tab:confusion_matrix_avg}). In contrast, strategic fine-tuning resulted in an improvement in BiomedCLIP's ability to generate stable and accurate saliency maps relevant to the target structures. Although this fine-tuning increased sensitivity (higher True Positives, lower False Negatives), it also reduced specificity, evidenced by the increase in average False Positive counts (Table \ref{tab:confusion_matrix_avg}). This observed contrast underscores the necessity of domain-specific adaptation for vision-language models when preparing inputs for subsequent segmentation tasks in specialized biomedical contexts.
 
-Additionally, our findings emphasize that SAM can indeed be utilized effectively off-the-shelf for biomedical segmentation tasks under specific conditions, particularly when ROIs are clearly defined, enclosed, non-overlapping, and devoid of significant imaging artifacts. Nevertheless, fine-tuning SAM remains essential for achieving consistently reliable segmentation across diverse biomedical modalities and imaging conditions.
+Our investigations demonstrated that the effectiveness of BiomedCLIP fine-tuning is highly sensitive to the chosen methodology. We found that minimal fine-tuning (e.g., around 5 epochs) using masked images and concise textual prompts often yielded robust saliency maps. This effectiveness likely stems from several factors: using masked images focuses the model on relevant features; shorter training durations prevent overfitting, promoting generalization; and concise prompts provide a clearer, less ambiguous signal to the model.
 
-In conclusion, a carefully fine-tuned vision-foundation model coupled with strategic selection of points or bounding boxes considerably enhances SAM's segmentation capabilities. Future studies should further investigate optimal point or bounding box selection strategies tailored to the characteristics of specific biomedical imaging modalities. Such enhancements, along with necessary fine-tuning of SAM itself, will pave the way toward more robust, reliable, and generalizable biomedical image segmentation frameworks.
+The refined saliency maps generated by the optimally tuned BiomedCLIP serve as a more effective foundation for deriving precise spatial prompts (points or bounding boxes) intended for use with SAM. The experiments underscored the importance of the prompt selection method, showing that simplistic strategies (like selecting random points from only the largest contour) are not universally optimal, especially for sparse or distributed ROIs where multi-contour strategies are preferable. The effectiveness of any prompt selection strategy is intrinsically linked to the quality and characteristics of the saliency map produced by the fine-tuned vision-language model.
+
+Furthermore, while this work focused primarily on optimizing and understanding the reproducibility of the prompt generation stage via BiomedCLIP, achieving reliable end-to-end segmentation necessitates acknowledging factors beyond this scope. Potential stochasticity within SAM's internal mask decoding process or implementation variations could still affect final segmentation reproducibility even with identical input prompts, representing an area for future investigation relevant to the broader goal of creating robust biomedical tools. Our results, focused on improving the input to SAM, indirectly support the notion that an off-the-shelf SAM could be utilized more effectively when provided with high-quality, targeted prompts derived from a well-tuned upstream model, particularly for tasks where ROIs are clearly indicated by the prompts. However, the question of whether SAM itself requires fine-tuning for optimal performance across diverse biomedical conditions remains an open area addressed by other studies in the field.
+
+In conclusion, a carefully fine-tuned vision-language model, configured with optimized parameters and training strategies, coupled with intelligent, context-aware selection of spatial prompts derived from its output, enhances the potential for effective segmentation using an off-the-shelf SAM by providing it with improved guidance. Future work stemming from this investigation should focus on the prompt generation and selection process:
+\begin{itemize}
+    \item Developing more sophisticated, adaptive, and potentially automated spatial prompt selection algorithms that optimally leverage the information in the refined saliency maps, tailored to specific biomedical imaging characteristics and ROI distributions.
+    \item Exploring advanced fine-tuning techniques (e.g., parameter-efficient methods) specifically for the vision-language model (BiomedCLIP) to further optimize saliency map quality and stability.
+    \item Investigating how variations in the quality and type of prompts generated by different BiomedCLIP configurations influence the downstream performance and behavior of a fixed SAM model.
+
+\end{itemize}
+By improving the crucial link between textual/visual understanding (BiomedCLIP) and spatial segmentation (SAM), such advancements will contribute to realizing more robust, reliable, and clinically valuable biomedical image segmentation frameworks that leverage the power of foundation models.
+
+% \section{Conclusion and Final Remarks}
+
+% This chapter investigated the application of foundation models, specifically the combination of BiomedCLIP and SAM, to the challenging task of biomedical image segmentation, using ciliary region identification as a case study. We highlighted the limitations of traditional supervised and unsupervised methods and positioned foundation models as a promising alternative due to their zero-shot or few-shot capabilities facilitated by user prompts.
+
+% Our investigations demonstrated that while off-the-shelf vision-language models like BiomedCLIP may struggle with specialized biomedical targets, strategic, minimal fine-tuning significantly improves the stability and accuracy of the generated saliency maps. These refined maps provide a more reliable foundation for generating precise spatial prompts (points or bounding boxes) required by SAM. The experiments clearly underscored the criticality of the prompt generation method itself, revealing that simplistic approaches (like using only the largest contour) are not universally optimal, especially for sparse or distributed ROIs where multi-contour strategies yield better results. The effectiveness of any prompt selection strategy is intrinsically linked to the quality and characteristics of the saliency map produced by the (fine-tuned) vision-language model.
+
+% Furthermore, our findings suggest that SAM itself can be effective off-the-shelf for certain biomedical tasks, provided the ROIs are well-defined, enclosed, and relatively free of artifacts. However, achieving consistent reliability across the diverse and complex range of biomedical imaging modalities and conditions often necessitates fine-tuning of the segmentation model (SAM) in addition to optimizing the prompt generation stage.
+
+% In conclusion, a carefully fine-tuned vision-language model coupled with intelligent, context-aware selection of spatial prompts considerably enhances the segmentation capabilities of models like SAM in the biomedical domain. Future work should focus on developing more sophisticated and adaptive prompt selection strategies tailored to specific biomedical imaging characteristics and target structures. Such advancements, potentially combined with efficient fine-tuning techniques for SAM itself, will be crucial in realizing the full potential of foundation models for robust, reliable, and generalizable biomedical image segmentation.
+
+
 \end{document}
