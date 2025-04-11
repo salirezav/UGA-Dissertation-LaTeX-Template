@@ -5,43 +5,80 @@
 \label{ch:conclusion}
 % This is where your Conclusion will go
 
+
 \section{Summary of Contributions}
-This dissertation systematically addresses key challenges in biomedical image segmentation by developing and evaluating supervised, self-supervised, minimally supervised, and foundation model-based segmentation methods. Collectively, these chapters form a cohesive framework that advances segmentation accuracy, generalizability, and usability across diverse biomedical imaging scenarios.
+This dissertation systematically addressed key challenges in biomedical image segmentation by developing and evaluating supervised, self-supervised, minimally supervised, and foundation model-based segmentation methods. Collectively, these chapters form a cohesive framework intended to advance segmentation accuracy, generalizability, and usability across diverse biomedical imaging scenarios.
 
-In Chapter \ref{ch:toxo}, we introduced TSeg, a comprehensive pipeline for 3D cell segmentation, tracking, and motility analysis, with a particular focus on \textit{Toxoplasma gondii}. TSeg combines deep learning-based segmentation with a user-friendly interface, enabling researchers with limited coding expertise to readily deploy CNN models. Its robust performance across various cell types and imaging modalities highlights its potential as a broadly applicable tool in biomedical research.
+In Chapter \ref{ch:toxo}, we introduced TSeg, a comprehensive pipeline for 3D cell segmentation, tracking, and motility analysis, demonstrated with \textit{Toxoplasma gondii}. TSeg integrates established CNN-based segmentation tools (CellPose, PlantSeg) with tracking and analysis modules within a user-friendly Napari plugin, enabling researchers with limited coding expertise to deploy these methods. Its performance evaluation on Cell Tracking Challenge (CTC) datasets highlights its potential as an applicable tool in biomedical research requiring 3D analysis.
 
-Chapter \ref{ch:cilia} presented a self-supervised segmentation method that generates pseudo-labels via optical flow and autoregressive modeling. This approach reduces the reliance on manually annotated datasets while maintaining strong segmentation performance. Although demonstrated specifically for cilia segmentation, the method can be extended to other time-series biomedical imaging tasks, such as cardiac motion analysis.
+Chapter \ref{ch:cilia} presented a self-supervised segmentation method for cilia, generating pseudo-labels via optical flow and autoregressive modeling of motion patterns. This approach reduces the reliance on manually annotated datasets for training segmentation models while achieving reasonable performance, particularly in identifying ciliary regions (comparable sensitivity to supervised methods). Although demonstrated specifically for cilia segmentation, the core idea of using motion signatures for pseudo-labeling could potentially be extended to other time-series biomedical imaging tasks, such as cardiac motion analysis or dynamic cell processes.
 
-In Chapter \ref{ch:contrastive}, we leveraged contrastive learning to enhance minimally supervised segmentation. This self-supervision approach demonstrated the potential for learning discriminative representations using only minimal labeled data. One future direction is to investigate whether our contrastive method could serve as an alternative to standard contrastive loss functions (e.g., DHN loss) in models like BiomedCLIP, potentially improving their performance in biomedical applications.
+In Chapter \ref{ch:contrastive}, we leveraged contrastive learning for minimally supervised segmentation, requiring only simple point-based user interaction to define regions of interest. This self-supervision approach learns discriminative representations from unlabeled temporal data, enabling segmentation with minimal annotation effort. The framework showed efficacy across various 2D CTC datasets, illustrating the potential of contrastive methods for tackling data scarcity. One specific future direction is to investigate whether the contrastive coding strategy developed here could serve as an alternative to standard contrastive loss functions (e.g., DHN-NCE loss) in vision-language models like BiomedCLIP, potentially improving their fine-tuning for biomedical applications.
 
-Chapter \ref{ch:foundation} explored the role of foundation models, focusing on the adaptation of Segment Anything Models (SAMs) for biomedical images. While SAMs provide flexible and efficient segmentation solutions, our findings emphasize the need for domain-specific fine-tuning. Nonetheless, SAMs represent an accessible tool for generating sufficiently accurate segmentations with minimal model training, opening avenues for broader adoption in biomedical image analysis.
+Chapter \ref{ch:foundation} explored the role of foundation models, specifically focusing on fine-tuning the BiomedCLIP vision-language model to improve the generation of spatial prompts for Segment Anything Models (SAMs). We investigated the impact of fine-tuning strategies, data masking, prompt consistency, and hyperparameters on the quality of generated saliency maps. While SAMs provide flexible segmentation solutions, our findings regarding the upstream prompt generation highlight that domain-specific adaptation, even if minimal, is often beneficial for reliable performance on specialized tasks like cilia identification. Nonetheless, the accessibility of foundation models like SAM, potentially guided by outputs from models like BiomedCLIP, opens avenues for broader adoption of advanced segmentation tools in biomedical image analysis.
 
 \section{Theoretical and Practical Implications}
-The proposed methodologies contribute both theoretically and practically to biomedical image segmentation. TSeg serves as a complete segmentation and tracking solution applicable to various 3D cellular imaging tasks. Its GUI-driven design lowers the barrier to entry for non-experts, accelerating the adoption of deep learning techniques in biomedical research.
+The proposed methodologies contribute both theoretically and practically to biomedical image segmentation. TSeg serves as an integrated segmentation and tracking solution applicable to various 3D cellular imaging tasks. Its GUI-driven design lowers the barrier to entry for non-experts, potentially accelerating the adoption of deep learning techniques in biological research.
 
-The self-supervised motion-based segmentation method introduces an efficient way of generating training datasets by leveraging optical flow and autoregressive modeling. This reduces annotation workload without sacrificing segmentation quality, making it well suited for time-series imaging tasks in fields such as cardiology and developmental biology.
+The self-supervised motion-based segmentation method (Chapter \ref{ch:cilia}) introduces an efficient way of generating training data by leveraging inherent temporal dynamics, reducing annotation workload without eliminating the need for model training itself. This makes it well-suited for time-series imaging tasks where motion is a key characteristic.
 
-Our contrastive learning framework illustrates the efficacy of self-supervision in biomedical segmentation. Future work may explore its integration into existing large-scale biomedical models, potentially boosting their ability to capture subtle morphological differences in complex imaging data.
+Our contrastive learning framework (Chapter \ref{ch:contrastive}) further illustrates the efficacy of self-supervision, learning useful representations directly from unlabeled image sequences with minimal interactive guidance. Exploring its integration into large-scale biomedical models could potentially enhance their ability to capture subtle morphological differences.
 
-Finally, the investigation of foundation models underlines both their promise and their limitations in specialized imaging domains. While generic vision models often overlook domain-specific details, appropriately fine-tuned foundation models can yield competitive and scalable solutions. Their ability to deliver sufficiently accurate segmentation with minimal supervision underscores their potential in widespread biomedical applications.
+Finally, the investigation of foundation models (Chapter \ref{ch:foundation}) underlines their dual nature: promise coupled with limitations in specialized domains. While generic pretraining might overlook domain-specific nuances, appropriate adaptation (here, of the prompt-generating model) can yield competitive results. The ability of foundation models like SAM to deliver usable segmentations with minimal direct supervision or fine-tuning (when provided good prompts) underscores their potential for widespread application.
 
-\section{Limitations and Future Directions}
-Despite the improvements introduced, several challenges and limitations remain. First, each method’s performance partly depends on the availability and diversity of training data; domain shifts or highly heterogeneous datasets can degrade accuracy. Second, while self-supervision and foundation models reduce annotation burdens, some level of expert validation is often still necessary to ensure biological or clinical relevance. Finally, the scalability of these methods in large-scale or real-time imaging contexts requires additional exploration.
+\section{Limitations, Failure Modes, and Future Directions}
+\label{sec:conclusion_limitations} % Added label for potential cross-referencing
+Despite the advancements presented, several challenges and limitations warrant discussion. Acknowledging these is crucial for responsible application and identifying pathways for future improvement, while not negating the utility of the methods in appropriate contexts.
 
-Future research could focus on extending these frameworks to handle multi-modal data (e.g., combining imaging with molecular or clinical data), exploring more advanced architectures that incorporate temporal or spatial priors, and refining domain adaptation strategies for foundation models. Incorporating uncertainty estimation and explainability methods may also enhance clinical acceptance and interpretability.
-
-\section{Broader Impact and Scientific Contributions}
-This dissertation advances biomedical image segmentation by introducing tools and methods that improve accessibility, reduce annotation demands, and enhance model robustness. The potential impact spans multiple domains:
-
+\subsection*{Limitations and Failure Modes} % Using subsection* for unnumbered subheadings
 \begin{itemize}
-    \item \textbf{Clinical Diagnostics:} Automated segmentation can facilitate the detection and analysis of conditions such as ciliopathies, cancer, and neurodegenerative disorders, streamlining clinical workflows and improving patient care.
-    \item \textbf{Biomedical Research:} The proposed segmentation pipelines can be applied to study cellular morphology, motility patterns, and disease progression, accelerating research in areas like developmental biology, immunology, and infectious disease.
-    \item \textbf{AI in Healthcare:} By making segmentation tools more accessible and less reliant on large annotated datasets, this work supports broader adoption of AI-driven diagnostics and personalized medicine, potentially transforming how we approach healthcare challenges.
+    \item \textbf{Data Dependency and Domain Shift:} The performance of all developed methods remains partly dependent on the characteristics of the training data. Domain shifts (e.g., applying a model trained on one microscope to data from another) or datasets with high heterogeneity can degrade accuracy. This is a common challenge in machine learning but particularly pronounced in biomedical imaging due to variability in equipment, protocols, and biological samples.
+    \item \textbf{Method-Specific Failures:}
+          \begin{itemize}
+              \item \textit{TSeg (Chapter \ref{ch:toxo}):} Performance is constrained by the chosen backend (CellPose/PlantSeg) and computational resources, especially for large 3D+time datasets \cite{dissertation.pdf}. The tracking module struggles with complex cellular events like dense overlaps, division, or fusion, potentially leading to trajectory errors \cite{dissertation.pdf}.
+              \item \textit{Self-Supervised Cilia Segmentation (Chapter \ref{ch:cilia}):} Accuracy relies on the quality of motion-derived pseudo-labels. Extraneous motion (e.g., stage drift) can create false signals, while very slow or irregular cilia movement may not generate strong enough signals, leading to under-segmentation \cite{dissertation.pdf}. Training solely on motile cilia might also bias the model if dyskinetic cilia have distinct static appearances not captured during training \cite{dissertation.pdf}.
+              \item \textit{Contrastive Learning Segmentation (Chapter \ref{ch:contrastive}):} This method struggled with images containing artifacts visually similar to the target texture (e.g., hydrogel shadows in BF-C2DL datasets) leading to false positives \cite{dissertation.pdf}. Performance also decreased in low-contrast images (Fluo-N2DL-HeLa) or where cell size and internal texture variation were large compared to the patch size (DIC-C2DH-HeLa), leading to incomplete masks or imprecise boundaries \cite{dissertation.pdf}.
+              \item \textit{Foundation Model Prompting (BiomedCLIP, Chapter \ref{ch:foundation}):} While fine-tuning improved saliency maps, it increased false positives \cite{dissertation.pdf}. The system remains sensitive to prompt phrasing and hyperparameter choices, impacting reproducibility of the prompt generation stage \cite{dissertation.pdf}. The quality of the final SAM segmentation (not performed in Chapter \ref{ch:foundation}) would depend heavily on these upstream factors.
+          \end{itemize}
+    \item \textbf{Need for Validation:} While self-supervision reduces manual annotation \textit{for training}, expert validation of the final segmentation outputs remains crucial for biological and clinical relevance, especially in diagnostic settings.
+    \item \textbf{Scalability:} Processing large 3D or 4D datasets remains computationally intensive for methods like TSeg. Real-time application may require further optimization or specialized hardware.
 \end{itemize}
 
-In conclusion, these contributions establish a solid foundation for more scalable, efficient, and interpretable biomedical segmentation approaches. By integrating deep learning, self-supervision, and foundation models, this dissertation brings the field closer to practical, domain-ready, and data-efficient solutions that can serve a wide range of medical and biological research endeavors.
+\subsection*{Uniqueness of Failures in Biomedical Images}
+Many failures observed (e.g., sensitivity to low contrast, texture variations, similar artifacts) are exacerbated in biomedical imaging compared to general computer vision. Reasons include the inherent complexity and subtlety of biological structures, lack of sharp canonical boundaries for many cell types or tissues, prevalence of imaging artifacts, and inter-sample biological variability.
 
+\subsection*{Future Directions}
+Building upon this work, future research could pursue several avenues:
+\begin{itemize}
+    \item \textbf{Improving Scalability and Robustness:}
+          \begin{itemize}
+              \item \textit{TSeg Scalability:} Investigate computational optimizations like data tiling, sparsification techniques, asynchronous processing, or leveraging cloud/HPC resources \cite{dissertation.pdf}. Explore alternative, potentially lighter-weight segmentation backends. %(Response to Comment 1)
+              \item \textit{Contrastive Learning Boundaries:} Enhance boundary definition by incorporating multi-scale patch analysis, exploring boundary-specific loss terms, refining negative sampling strategies, or integrating minimal boundary annotations \cite{dissertation.pdf}. %(Response to Comment 2)
+          \end{itemize}
+    \item \textbf{Exploring Advanced Architectures:} While TSeg currently uses CNNs (U-Nets via CellPose/PlantSeg), future iterations \textit{could} explore transformer-based architectures (like Swin-UNET \cite{dissertation.pdf}, UNETR \cite{dissertation.pdf}) which have shown promise in capturing long-range spatial dependencies in medical images, potentially improving segmentation of complex or large structures. However, this work did not implement or evaluate transformers within TSeg. %(Response to Comment 3)
+    \item \textbf{Enhancing Generalization and Applicability:}
+          \begin{itemize}
+              \item \textit{Additional Datasets:} Validate methods on a wider range of datasets beyond CTC or the specific cilia data, such as imaging data from different organisms, other microscopy modalities (e.g., Electron Microscopy, Confocal), different disease states, or clinical imaging archives (e.g., radiology scans for foundation models). %(Response to Comment 4)
+              \item \textit{Multimodal Data Integration:} Explore fusion techniques to combine imaging data with other sources. For example, integrating clinical metadata or molecular profiling could potentially guide segmentation models via attention mechanisms or be used as conditional inputs to improve specificity. %(Response to Comment 5)
+          \end{itemize}
+    \item \textbf{Leveraging Newer AI Paradigms:}
+          \begin{itemize}
+              \item \textit{Foundation Models:} Investigate newer foundation models possessing enhanced reasoning capabilities or explicit knowledge integration, potentially improving segmentation accuracy through better contextual understanding. %(Response to Comment 10)
+              \item \textit{Reinforcement Learning:} Explore RL for optimizing interactive segmentation workflows (e.g., learning the best sequence of user prompts/corrections) or for automated hyperparameter tuning. %(Response to Comment 11)
+          \end{itemize}
+    \item \textbf{Improving Trust and Interpretability:} Incorporate uncertainty estimation techniques (e.g., Bayesian deep learning, ensemble methods) to provide confidence scores for segmentations, and utilize explainability methods (e.g., attention maps, Grad-CAM) to understand model decision-making, enhancing clinical acceptance.
+\end{itemize}
 
+\section{Broader Impact and Scientific Contributions}
+This dissertation advances biomedical image segmentation by introducing tools and methods intended to improve accessibility, reduce annotation demands, and enhance model robustness. The potential impact spans multiple domains:
+
+\begin{itemize}
+    \item \textbf{Clinical Diagnostics:} Automated segmentation can facilitate the detection and analysis of conditions such as ciliopathies, cancer, and neurodegenerative disorders, potentially streamlining clinical workflows and improving patient care.
+    \item \textbf{Biomedical Research:} The proposed segmentation pipelines can be applied to study cellular morphology, motility patterns, and disease progression, potentially accelerating research in areas like developmental biology, immunology, and infectious disease.
+    \item \textbf{AI in Healthcare:} By making segmentation tools more accessible and less reliant on large annotated datasets, this work supports broader adoption of AI-driven diagnostics and personalized medicine, potentially transforming approaches to healthcare challenges.
+\end{itemize}
+
+In conclusion, these contributions establish a foundation for developing more scalable, efficient, and interpretable biomedical segmentation approaches. By integrating deep learning, self-supervision, and foundation models, this dissertation aims to bring the field closer to practical, domain-ready, and data-efficient solutions that can serve a wide range of medical and biological research endeavors.
 
 
 
